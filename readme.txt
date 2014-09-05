@@ -2,7 +2,7 @@
 Contributors: @natashalavail, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products
 Requires at least: 3.0, WooCommerce 2.1
-Tested up to: 3.9.1
+Tested up to: 4.0
 Stable tag: 1.0.4
 License: GPLv2 or later
 

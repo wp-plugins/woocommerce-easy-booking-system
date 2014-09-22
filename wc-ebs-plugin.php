@@ -85,11 +85,11 @@ class WC_EBS extends WC_AJAX {
 
         $wc_ebs_options = get_post_meta($post->ID, '_booking_option', true);
         if (isset($wc_ebs_options) && $wc_ebs_options) {
-            if ( $this->options['wc_ebs_info_text_display'] ) {
+            if ( isset( $this->options['wc_ebs_info_text_display'] ) ) {
                 echo '<p class="woocommerce-info">' . __( $this->options['wc_ebs_info_text'] ) . '</p>';
             }
 
-            echo '<div class="wc_ebs_errors">' . woocommerce_show_messages() . '</div>
+            echo '<div class="wc_ebs_errors">' . wc_print_notices() . '</div>
                 <p>
                     <label for="start_date">' . __( $this->options['wc_ebs_start_date_text'], 'wc_ebs' ) . ' : </label>
                     <input type="text" id="start_date" class="datepicker1" data-product_id="' . $product->id . '" data-value="">
@@ -113,7 +113,7 @@ class WC_EBS extends WC_AJAX {
         $currency = get_woocommerce_currency_symbol();
         $new_price = $price * $output;
 
-        $wc_ebs_options = get_post_meta($post->ID, '_booking_option', true);
+        $wc_ebs_options = get_post_meta($product_id, '_booking_option', true);
 
         // Return either the new price or a price / day or normal price
         if ( isset($_POST['days']) && $_POST['days'] > 0 ) {
@@ -151,12 +151,13 @@ class WC_EBS extends WC_AJAX {
         }
 
         // Show error message
-        if ( $error_code ) {
+        if ( isset( $error_code ) ) {
 
             $error_message = $this->wc_ebs_get_date_error( $error_code );
-            $woocommerce->add_error($error_message);
+            // $woocommerce->add_error($error_message);
+            wc_add_notice( $error_message, 'error' );
 
-            $this->wc_ebs_error_fragment($messages);
+            $this->wc_ebs_error_fragment($error_message);
 
         } else {
 
@@ -226,7 +227,7 @@ class WC_EBS extends WC_AJAX {
         header( 'Content-Type: application/json; charset=utf-8' );
 
         ob_start();
-        woocommerce_show_messages();
+        wc_print_notices();
         $messages = ob_get_clean();
 
             $data = array(

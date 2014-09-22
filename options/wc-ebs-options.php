@@ -110,7 +110,7 @@ class WC_EBS_settings {
 	}
 
 	public function wc_ebs_info_text_display() {
-		echo '<input id="plugin_text_string" name="wc_ebs_options[wc_ebs_info_text_display]" type="checkbox" value="1"' . checked( 1, $this->options['wc_ebs_info_text_display'], false ) .  '/>
+		echo '<input id="plugin_text_string" name="wc_ebs_options[wc_ebs_info_text_display]" type="checkbox" value="1"' . checked( 1, isset( $this->options['wc_ebs_info_text_display'] ), false ) .  '/>
 		<p class="description">' . __('Choose to display or not an information text before date inputs', 'wc_ebs') . '</p>';
 	}
 

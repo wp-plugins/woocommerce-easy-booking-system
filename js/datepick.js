@@ -16,7 +16,8 @@
 					endDate = endPicker.get('select');
 					endDatePick = endDate['pick'],
 					endDateVal = endPicker.get('value'),
-					product_id = $('.datepicker2').data('product_id');
+					product_id = $('.datepicker2').data('product_id'),
+					variation_id = $('#variation_id').val();
 
 				var interval = parseInt( (endDatePick - startDatePick) / 86400000 );
 
@@ -33,6 +34,7 @@
 				var data = {
 					action: 'add_new_price',
 					product_id: product_id,
+					variation_id: variation_id,
 					days: interval,
 					start: startDateVal,
 					end: endDateVal

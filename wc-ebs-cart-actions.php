@@ -16,12 +16,12 @@ class WC_EBS_Cart extends WC_Cart {
     function wc_ebs_add_cart_item_data($cart_item_meta, $product_id) {
         global $woocommerce;
  
-        $booking_price = get_post_meta($product_id, '_new_price', true);
+        $booking_price = get_post_meta($product_id, '_booking_price', true);
         $base_price = get_post_meta($product_id, '_price', true);
         $start = get_post_meta($product_id, '_start_date', true);
         $end = get_post_meta($product_id, '_end_date', true);
 
-        $cart_item_meta['_new_price'] = $booking_price;
+        $cart_item_meta['_booking_price'] = $booking_price;
         $cart_item_meta['_start_date'] = $start;
         $cart_item_meta['_end_date'] = $end;
 
@@ -33,8 +33,8 @@ class WC_EBS_Cart extends WC_Cart {
     function wc_ebs_get_cart_item_from_session($cart_item, $values) {
 
         // Add the form options meta to the cart item in case you want to do special stuff on the check out page.
-        if (isset($values['_new_price'])) {
-            $cart_item['_new_price'] = $values['_new_price'];
+        if (isset($values['_booking_price'])) {
+            $cart_item['_booking_price'] = $values['_booking_price'];
         }
 
         if (isset($values['_start_date'])) {
@@ -53,8 +53,8 @@ class WC_EBS_Cart extends WC_Cart {
     // Reset meta data after adding to cart
     function wc_ebs_reset_product_meta( $product_id, $base_price, $start, $end ) {
 
-        if ( get_post_meta( $product_id, '_new_price', true ) ) {
-            update_post_meta($product_id, '_new_price', $base_price);
+        if ( get_post_meta( $product_id, '_booking_price', true ) ) {
+            update_post_meta($product_id, '_booking_price', $base_price);
         }
 
         if ( get_post_meta( $product_id, '_start_date', true ) ) {
@@ -91,8 +91,8 @@ class WC_EBS_Cart extends WC_Cart {
     function wc_ebs_add_cart_item($cart_item) {
         global $woocommerce;
  
-        if ( isset($cart_item['_new_price']) && $cart_item['_new_price'] > 0 ) {
-            $booking_price = $cart_item['_new_price'];
+        if ( isset($cart_item['_booking_price']) && $cart_item['_booking_price'] > 0 ) {
+            $booking_price = $cart_item['_booking_price'];
             $cart_item['data']->set_price($booking_price);
         }
  

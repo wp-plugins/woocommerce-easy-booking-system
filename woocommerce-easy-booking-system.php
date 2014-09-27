@@ -3,7 +3,7 @@
 Plugin Name: Woocommerce easy booking system
 Plugin URI: http://wordpress.org/plugins/woocommerce-easy-booking-system/
 Description: Allows users to rent or book products
-Version: 1.1
+Version: 1.2
 Author: Natasha Lavail
 Author URI: http://ashanna.com
 Licence : GPL
@@ -12,9 +12,9 @@ Licence : GPL
 function wc_ebs_init() {
     // Check if WooCommerce is active
     if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+        include_once('options/wc-ebs-options.php');
         include_once('wc-ebs-plugin.php');
         include_once('wc-ebs-cart-actions.php');
-        include_once('options/wc-ebs-options.php');
     }
 }
 

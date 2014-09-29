@@ -9,7 +9,7 @@
   font-size: 16px;
   text-align: left;
   line-height: 1.2;
-  color: #d84f2d;
+  color: #0a0a0a;
   position: absolute;
   z-index: 10000;
 }
@@ -24,7 +24,7 @@
  * When the picker is opened, the input element is “activated”.
  */
 .picker__input.picker__input--active {
-  border-color: #e246c6;
+  border-color: #0089ec;
 }
 /**
  * The holder is the only “scrollable” top-level container element.
@@ -105,7 +105,7 @@
  * The box contains all the picker contents.
  */
 .picker__box {
-  background:#f9f9f9;
+  background:#FFFFFF;
   display: table-cell;
   vertical-align: middle;
 }
@@ -118,8 +118,8 @@
   .picker__box {
     display: block;
     font-size: 1.33em;
-    border: 1px solid #636363;
-    border-top-color: #7c7c7c;
+    border: 1px solid #696969;
+    border-top-color: #828282;
     border-bottom-width: 0;
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
@@ -196,7 +196,7 @@
   margin-right: .25em;
 }
 .picker__year {
-  color: #959595;
+  color: #9b9b9b;
   font-size: .8em;
   font-style: italic;
 }
@@ -206,7 +206,7 @@
 .picker__select--month,
 .picker__select--year {
   font-size: .8em;
-  border: 1px solid #c7c7c7;
+  border: 1px solid #cdcdcd;
   height: 2.5em;
   padding: .5em .25em;
   margin-left: .25em;
@@ -221,7 +221,7 @@
 }
 .picker__select--month:focus,
 .picker__select--year:focus {
-  border-color: #e246c6;
+  border-color: #0089ec;
 }
 /**
  * The month navigation buttons.
@@ -246,7 +246,7 @@
   content: " ";
   border-top: .5em solid transparent;
   border-bottom: .5em solid transparent;
-  border-right: 0.75em solid #d84f2d;
+  border-right: 0.75em solid #0a0a0a;
   width: 0;
   height: 0;
   display: block;
@@ -254,13 +254,13 @@
 }
 .picker__nav--next:before {
   border-right: 0;
-  border-left: 0.75em solid #d84f2d;
+  border-left: 0.75em solid #0a0a0a;
 }
 .picker__nav--prev:hover,
 .picker__nav--next:hover {
   cursor: pointer;
-  color: #d84f2d;
-  background: #ffdcff;
+  color: #0a0a0a;
+  background: #96ffff;
 }
 .picker__nav--disabled,
 .picker__nav--disabled:hover,
@@ -268,8 +268,8 @@
 .picker__nav--disabled:before:hover {
   cursor: default;
   background: none;
-  border-right-color: #efefef;
-  border-left-color: #efefef;
+  border-right-color: #f5f5f5;
+  border-left-color: #f5f5f5;
 }
 /**
  * The calendar table of dates
@@ -305,7 +305,7 @@
   width: 14.285714286%;
   font-size: .75em;
   padding-bottom: .25em;
-  color: #959595;
+  color: #9b9b9b;
   font-weight: 500;
   text-align: center;
   /* Increase the spacing a tad */
@@ -326,7 +326,7 @@
   text-align: center;
 }
 .picker__day--today {
-  color: #e246c6;
+  color: #0089ec;
   position: relative;
 }
 .picker__day--today:before {
@@ -336,43 +336,43 @@
   right: 2px;
   width: 0;
   height: 0;
-  border-top: 0.5em solid #b01494;
+  border-top: 0.5em solid #0057ba;
   border-left: .5em solid transparent;
 }
 .picker__day--selected,
 .picker__day--selected:hover {
-  border-color: #e246c6;
+  border-color: #0089ec;
 }
 .picker__day--highlighted {
-  background: #ffdcff;
+  background: #96ffff;
 }
 .picker__day--disabled:before {
-  border-top-color: #aeaeae;
+  border-top-color: #b4b4b4;
 }
 .picker__day--outfocus {
-  color: #c7c7c7;
+  color: #cdcdcd;
 }
 .picker__day--infocus:hover,
 .picker__day--outfocus:hover {
   cursor: pointer;
-  color: #d84f2d;
-  background: #ffdcff;
+  color: #0a0a0a;
+  background: #96ffff;
 }
 .picker__day--highlighted:hover,
 .picker--focused .picker__day--highlighted {
-  background: #e246c6;
-  color: #f9f9f9;
+  background: #0089ec;
+  color: #FFFFFF;
 }
 .picker__day--disabled,
 .picker__day--disabled:hover {
-  background: #efefef;
-  border-color: #efefef;
-  color: #c7c7c7;
+  background: #f5f5f5;
+  border-color: #f5f5f5;
+  color: #cdcdcd;
   cursor: default;
 }
 .picker__day--highlighted.picker__day--disabled,
 .picker__day--highlighted.picker__day--disabled:hover {
-  background: #d1d1d1;
+  background: #d7d7d7;
 }
 /**
  * The footer containing the "today" and "clear" buttons.
@@ -382,9 +382,9 @@
 }
 .picker__button--today,
 .picker__button--clear {
-  border: 1px solid #f9f9f9;
-  background: #f9f9f9;
-  color: #d84f2d;
+  border: 1px solid #FFFFFF;
+  background: #FFFFFF;
+  color: #0a0a0a;
   font-size: .8em;
   padding: .66em 0;
   font-weight: bold;
@@ -395,14 +395,14 @@
 .picker__button--today:hover,
 .picker__button--clear:hover {
   cursor: pointer;
-  color: #d84f2d;
-  background: #ffdcff;
-  border-bottom-color: #ffdcff;
+  color: #0a0a0a;
+  background: #96ffff;
+  border-bottom-color: #96ffff;
 }
 .picker__button--today:focus,
 .picker__button--clear:focus {
-  background: #ffdcff;
-  border-color: #e246c6;
+  background: #96ffff;
+  border-color: #0089ec;
   outline: none;
 }
 .picker__button--today:before,
@@ -416,7 +416,7 @@
   margin-right: .45em;
   top: -0.05em;
   width: 0;
-  border-top: 0.66em solid #b01494;
+  border-top: 0.66em solid #0057ba;
   border-left: .66em solid transparent;
 }
 .picker__button--clear:before {

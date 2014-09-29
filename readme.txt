@@ -55,7 +55,3 @@ It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars an
 * Security updates
 * Scripts updates
 * Updated French translation
-
-= 1.2.1 =
-* Changed the way CSS was added
-* Security update

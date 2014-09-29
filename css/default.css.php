@@ -1,9 +1,14 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit; // Exit if accessed directly
+}
+
 header("Content-type: text/css; charset: UTF-8");
 
-$background_color = isset( $this->options['wc_ebs_background_color'] ) ? $this->options['wc_ebs_background_color'] : '#FFFFFF';
-$main_color = isset( $this->options['wc_ebs_color_select'] ) ? $this->options['wc_ebs_color_select'] : '#0089EC';
-$text_color = isset( $this->options['wc_ebs_text_color'] ) ? $this->options['wc_ebs_text_color'] : '#000000';
+$background_color = isset( $data['wc_ebs_background_color'] ) ? $data['wc_ebs_background_color'] : '#FFFFFF';
+$main_color = isset( $data['wc_ebs_color_select'] ) ? $data['wc_ebs_color_select'] : '#0089EC';
+$text_color = isset( $data['wc_ebs_text_color'] ) ? $data['wc_ebs_text_color'] : '#000000';
 
 function adjustBrightness($hex, $steps) {
     // Steps should be between -255 and 255. Negative = darker, positive = lighter

@@ -9,7 +9,7 @@
   font-size: 16px;
   text-align: left;
   line-height: 1.2;
-  color: #000000;
+  color: #0a0a0a;
   position: absolute;
   z-index: 10000;
 }
@@ -18,6 +18,7 @@
  */
 .picker__input {
   cursor: default;
+}
 }
 /**
  * When the picker is opened, the input element is “activated”.
@@ -104,7 +105,7 @@
  * The box contains all the picker contents.
  */
 .picker__box {
-  background: #ffffff;
+  background:#FFFFFF;
   display: table-cell;
   vertical-align: middle;
 }
@@ -117,8 +118,8 @@
   .picker__box {
     display: block;
     font-size: 1.33em;
-    border: 1px solid #777777;
-    border-top-color: #898989;
+    border: 1px solid #696969;
+    border-top-color: #828282;
     border-bottom-width: 0;
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
@@ -195,7 +196,7 @@
   margin-right: .25em;
 }
 .picker__year {
-  color: #999999;
+  color: #9b9b9b;
   font-size: .8em;
   font-style: italic;
 }
@@ -205,7 +206,7 @@
 .picker__select--month,
 .picker__select--year {
   font-size: .8em;
-  border: 1px solid #b7b7b7;
+  border: 1px solid #cdcdcd;
   height: 2.5em;
   padding: .5em .25em;
   margin-left: .25em;
@@ -231,7 +232,6 @@
   top: -0.33em;
   padding: .5em 1.33em;
   width: 1em;
-  height: 1em;
 }
 .picker__nav--prev {
   left: -1em;
@@ -246,7 +246,7 @@
   content: " ";
   border-top: .5em solid transparent;
   border-bottom: .5em solid transparent;
-  border-right: 0.75em solid #000000;
+  border-right: 0.75em solid #0a0a0a;
   width: 0;
   height: 0;
   display: block;
@@ -254,13 +254,13 @@
 }
 .picker__nav--next:before {
   border-right: 0;
-  border-left: 0.75em solid #000000;
+  border-left: 0.75em solid #0a0a0a;
 }
 .picker__nav--prev:hover,
 .picker__nav--next:hover {
   cursor: pointer;
-  color: #000000;
-  background: #b1dcfb;
+  color: #0a0a0a;
+  background: #96ffff;
 }
 .picker__nav--disabled,
 .picker__nav--disabled:hover,
@@ -284,6 +284,11 @@
   margin-top: .75em;
   margin-bottom: .5em;
 }
+
+.picker__table td, .picker__table th {
+  border: none;
+}
+
 @media (min-height: 33.875em) {
   .picker__table {
     margin-bottom: .75em;
@@ -300,8 +305,9 @@
   width: 14.285714286%;
   font-size: .75em;
   padding-bottom: .25em;
-  color: #999999;
+  color: #9b9b9b;
   font-weight: 500;
+  text-align: center;
   /* Increase the spacing a tad */
 
 }
@@ -330,7 +336,7 @@
   right: 2px;
   width: 0;
   height: 0;
-  border-top: 0.5em solid #0059bc;
+  border-top: 0.5em solid #0057ba;
   border-left: .5em solid transparent;
 }
 .picker__day--selected,
@@ -338,35 +344,35 @@
   border-color: #0089ec;
 }
 .picker__day--highlighted {
-  background: #b1dcfb;
+  background: #96ffff;
 }
 .picker__day--disabled:before {
-  border-top-color: #aaaaaa;
+  border-top-color: #b4b4b4;
 }
 .picker__day--outfocus {
-  color: #dddddd;
+  color: #cdcdcd;
 }
 .picker__day--infocus:hover,
 .picker__day--outfocus:hover {
   cursor: pointer;
-  color: #000000;
-  background: #b1dcfb;
+  color: #0a0a0a;
+  background: #96ffff;
 }
 .picker__day--highlighted:hover,
 .picker--focused .picker__day--highlighted {
   background: #0089ec;
-  color: #ffffff;
+  color: #FFFFFF;
 }
 .picker__day--disabled,
 .picker__day--disabled:hover {
   background: #f5f5f5;
   border-color: #f5f5f5;
-  color: #dddddd;
+  color: #cdcdcd;
   cursor: default;
 }
 .picker__day--highlighted.picker__day--disabled,
 .picker__day--highlighted.picker__day--disabled:hover {
-  background: #bbbbbb;
+  background: #d7d7d7;
 }
 /**
  * The footer containing the "today" and "clear" buttons.
@@ -376,8 +382,9 @@
 }
 .picker__button--today,
 .picker__button--clear {
-  border: 1px solid #ffffff;
-  background: #ffffff;
+  border: 1px solid #FFFFFF;
+  background: #FFFFFF;
+  color: #0a0a0a;
   font-size: .8em;
   padding: .66em 0;
   font-weight: bold;
@@ -388,13 +395,13 @@
 .picker__button--today:hover,
 .picker__button--clear:hover {
   cursor: pointer;
-  color: #000000;
-  background: #b1dcfb;
-  border-bottom-color: #b1dcfb;
+  color: #0a0a0a;
+  background: #96ffff;
+  border-bottom-color: #96ffff;
 }
 .picker__button--today:focus,
 .picker__button--clear:focus {
-  background: #b1dcfb;
+  background: #96ffff;
   border-color: #0089ec;
   outline: none;
 }
@@ -409,7 +416,7 @@
   margin-right: .45em;
   top: -0.05em;
   width: 0;
-  border-top: 0.66em solid #0059bc;
+  border-top: 0.66em solid #0057ba;
   border-left: .66em solid transparent;
 }
 .picker__button--clear:before {

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
 class WC_EBS extends WC_AJAX {
 
     public function __construct() {
@@ -18,8 +22,6 @@ class WC_EBS extends WC_AJAX {
         add_action( 'wp_ajax_nopriv_add_new_price', array( $this, 'wc_ebs_get_new_price' ));
         add_filter( 'add_to_cart_fragments', array( $this, 'wc_ebs_new_price_fragment' ));
         add_filter( 'woocommerce_loop_add_to_cart_link', array($this, 'wc_ebs_custom_loop_add_to_cart' ), 10, 2 );
-        add_action( 'wp_ajax_dynamic_css', array( $this, 'wc_ebs_dynamic_css'));
-        add_action( 'wp_ajax_nopriv_dynamic_css', array( $this, 'wc_ebs_dynamic_css'));
     }
 
     public function wc_ebs_enqueue_scripts() {
@@ -44,8 +46,8 @@ class WC_EBS extends WC_AJAX {
 
             wp_enqueue_script( 'datepicker.language', plugins_url( '/js/translations/' . $lang . '.js', __FILE__ ), array('jquery'), '1.0', true);
 
-            if ( ! is_ajax() )
-                wp_enqueue_style('picker', admin_url('admin-ajax.php').'?action=dynamic_css');
+            wp_register_style( 'picker', plugins_url('/css/default.min.css', __FILE__), true);
+            wp_enqueue_style( 'picker' );
 
             // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
             wp_localize_script( 'datepicker', 'ajax_object',
@@ -54,11 +56,6 @@ class WC_EBS extends WC_AJAX {
                 )
             );
         }
-    }
-
-    public function wc_ebs_dynamic_css() {
-        include_once('/css/default.min.css.php');
-        die();
     }
 
     // Add checkbox to the product admin page

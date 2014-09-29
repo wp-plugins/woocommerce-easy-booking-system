@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
 header("Content-type: text/css; charset: UTF-8");
 
 $background_color = isset( $this->options['wc_ebs_background_color'] ) ? $this->options['wc_ebs_background_color'] : '#FFFFFF';

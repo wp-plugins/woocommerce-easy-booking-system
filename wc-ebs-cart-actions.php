@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
+}
+
 class WC_EBS_Cart extends WC_Cart {
 
     public function __construct() {

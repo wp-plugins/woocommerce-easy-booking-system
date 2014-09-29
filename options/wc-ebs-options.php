@@ -1,11 +1,16 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 class WC_EBS_settings {
 
 	public function __construct() {
 
 		// get plugin options values
 		$this->options = get_option('wc_ebs_options');
+		
 		
 		// initialize options the first time
 		if ( !$this->options ) {
@@ -40,6 +45,22 @@ class WC_EBS_settings {
 	  	wp_enqueue_style('wp-color-picker');
 	  	wp_enqueue_script('color-picker', plugins_url('js/script.js', dirname(__FILE__)), array('wp-color-picker'), false, true );
 	}
+
+	public function generate_options_css( $newdata ) {
+
+        $data = $newdata;   
+        $plugin_dir = plugin_dir_path( dirname(__FILE__) ); // Shorten code, save 1 call
+        $php_file = realpath ( $plugin_dir . 'css/default.min.css.php' );
+        $css_file = realpath ( $plugin_dir . 'css/default.min.css' );
+        ob_start(); // Capture all output (output buffering)
+
+        require( $php_file ); // Generate CSS
+
+        $css = ob_get_clean(); // Get generated CSS (output buffering)
+
+        if ( is_writable( $css_file ) )
+        	file_put_contents($css_file, $css); // Save it
+    }
 
 	public function wc_ebs_admin_init() {
 
@@ -111,6 +132,9 @@ class WC_EBS_settings {
 			'wc_ebs_main_color'
 		);
 
+		$data = get_option('wc_ebs_options');
+		$this->generate_options_css( $data ); //generate static css file
+
 	}
 
 	public function wc_ebs_option_page() {
@@ -181,7 +205,6 @@ class WC_EBS_settings {
 
 		return $settings;
 	}
-
 }
 
 new WC_EBS_settings();

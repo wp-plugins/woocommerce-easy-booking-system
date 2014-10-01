@@ -150,7 +150,16 @@ class WC_EBS extends WC_AJAX {
         $product_id = isset($_POST['product_id']) && intval($_POST['product_id'] ) ? $_POST['product_id'] : ''; // Product ID
         $variation_id = isset($_POST['variation_id']) && intval($_POST['variation_id'] ) ? $_POST['variation_id'] : ''; // Variation ID
 
-        $duration = isset($_POST['days']) && intval( $_POST['days'] ) ? $_POST['days'] : 1; // Booking duration
+        $days = isset($_POST['days']) && intval( $_POST['days'] ) ? $_POST['days'] : 1; // Booking duration
+        $calc_mode = $this->options['wc_ebs_calc_mode']; // Calculation mode (Days or Nights)
+
+        // If calculation mode is set to "Days", add one day
+        if ( $calc_mode == "days" ) {
+            $duration = $days + 1;
+        } else {
+            $duration = $days;
+        }
+
         $start_date = isset($_POST['start']) ? sanitize_text_field($_POST['start']) : ''; // Booking start date
         $end_date = isset($_POST['end']) ? sanitize_text_field($_POST['end']) : ''; // Booking end date
 

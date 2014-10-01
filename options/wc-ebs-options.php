@@ -11,11 +11,11 @@ class WC_EBS_settings {
 		// get plugin options values
 		$this->options = get_option('wc_ebs_options');
 		
-		
 		// initialize options the first time
 		if ( !$this->options ) {
 		
-		    $this->options = array( 'wc_ebs_info_text' => '',
+		    $this->options = array( 'wc_ebs_calc_mode' => 'nights',
+		    						'wc_ebs_info_text' => '',
 		    						'wc_ebs_start_date_text' => __('Start', 'wc_ebs'), 
 		                            'wc_ebs_end_date_text' => __('End', 'wc_ebs'),
 		                            'wc_ebs_background_color' => '#FFFFFF',
@@ -68,6 +68,21 @@ class WC_EBS_settings {
 			'wc_ebs_options',
 			'wc_ebs_options', 
 			array( $this, 'sanitize_values' )
+		);
+
+		add_settings_section(
+			'wc_ebs_main_settings',
+			__('General settings', 'wc_ebs'),
+			array( $this, 'wc_ebs_section_general' ),
+			'wc_ebs_options'
+		);
+
+		add_settings_field(
+			'wc_ebs_calc_mode',
+			__('Calculation mode', 'wc_ebs'),
+			array( $this, 'wc_ebs_calc_mode' ),
+			'wc_ebs_options',
+			'wc_ebs_main_settings'
 		);
 
 		add_settings_section(
@@ -157,6 +172,21 @@ class WC_EBS_settings {
 		</div>
 		<?php
 
+	}
+
+	public function wc_ebs_section_general() {
+		echo '';
+	}
+
+	public function wc_ebs_calc_mode() {
+
+		$calc_mode = isset ( $this->options['wc_ebs_calc_mode'] ) ? $this->options['wc_ebs_calc_mode'] : 'nights';
+
+		echo '<select id="calc_mode" name="wc_ebs_options[wc_ebs_calc_mode]">
+			<option value="days"' . selected( $calc_mode, 'days', false) . '>' . __('Days', 'wc_ebs') . '</option>
+			<option value="nights"' . selected( $calc_mode, 'nights', false) . '>' . __('Nights', 'wc_ebs') . '</option>
+		</select>
+		<p class="description">' . __('Choose whether to calculate the final price depending on number of days or number of nights (i.e. 5 days = 4 nights).' , 'wc_ebs') . '</p>';
 	}
 
 	public function wc_ebs_section_text() {

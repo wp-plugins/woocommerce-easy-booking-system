@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Easy Booking System\n"
-"POT-Creation-Date: 2014-09-25 10:24+0100\n"
-"PO-Revision-Date: 2014-09-25 10:29+0100\n"
+"POT-Creation-Date: 2014-10-01 11:23+0100\n"
+"PO-Revision-Date: 2014-10-01 11:26+0100\n"
 "Last-Translator: \n"
 "Language-Team: Natasha Lavail\n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,16 @@ msgstr ""
 "\\wp-content\\plugins\\woocommerce-easy-booking-system\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: wc-ebs-cart-actions.php:80 wc-ebs-cart-actions.php:130
+#: options/wc-ebs-options.php:19
+msgid "Start"
+msgstr "Début"
+
+#: wc-ebs-cart-actions.php:81 wc-ebs-cart-actions.php:131
+#: options/wc-ebs-options.php:20
+msgid "End"
+msgstr "Fin"
 
 #: wc-ebs-plugin.php:68
 msgid "Bookable"
@@ -28,78 +38,94 @@ msgstr ""
 msgid " / day"
 msgstr " / jour"
 
-#: wc-ebs-plugin.php:211
+#: wc-ebs-plugin.php:219
 msgid "Please choose valid dates"
 msgstr "Veuillez choisir des dates valides"
 
-#: wc-ebs-plugin.php:214
+#: wc-ebs-plugin.php:222
 msgid "Please choose two dates"
 msgstr "Veuillez indiquez deux dates"
 
-#: wc-ebs-plugin.php:217
+#: wc-ebs-plugin.php:225
 msgid "Please select product option"
 msgstr "Veuillez choisir une option"
 
-#: wc-ebs-plugin.php:293
+#: wc-ebs-plugin.php:301
 msgid "Select dates"
 msgstr "Choix des dates"
 
-#: woocommerce-easy-booking-system.php:24
+#: woocommerce-easy-booking-system.php:28
 msgid "Settings"
 msgstr "Paramètres"
 
-#: options/wc-ebs-options.php:14
-msgid "Start"
-msgstr "Début"
+#: options/wc-ebs-options.php:75
+msgid "General settings"
+msgstr "Paramètres généraux"
 
-#: options/wc-ebs-options.php:15
-msgid "End"
-msgstr "Fin"
+#: options/wc-ebs-options.php:82
+msgid "Calculation mode"
+msgstr "Mode de calcul"
 
-#: options/wc-ebs-options.php:54
+#: options/wc-ebs-options.php:90
 msgid "Text settings"
 msgstr "Paramètres des textes"
 
-#: options/wc-ebs-options.php:61
+#: options/wc-ebs-options.php:97
 msgid "Information text"
 msgstr "Texte d'information"
 
-#: options/wc-ebs-options.php:69
+#: options/wc-ebs-options.php:105
 msgid "First date title"
 msgstr "Titre de la première date"
 
-#: options/wc-ebs-options.php:77
+#: options/wc-ebs-options.php:113
 msgid "Second date title"
 msgstr "Titre de la seconde date"
 
-#: options/wc-ebs-options.php:85
+#: options/wc-ebs-options.php:121
 msgid "Color settings"
 msgstr "Paramètres des couleurs"
 
-#: options/wc-ebs-options.php:92
+#: options/wc-ebs-options.php:128
 msgid "Background color"
 msgstr "Couleur de fond"
 
-#: options/wc-ebs-options.php:100
+#: options/wc-ebs-options.php:136
 msgid "Main color"
 msgstr "Couleur principale"
 
-#: options/wc-ebs-options.php:108
+#: options/wc-ebs-options.php:144
 msgid "Text color"
 msgstr "Couleur du texte"
 
-#: options/wc-ebs-options.php:122
+#: options/wc-ebs-options.php:161
 msgid "WooCommerce Easy Booking System options"
 msgstr "Options de WooCommerce Easy Booking System"
 
-#: options/wc-ebs-options.php:139
+#: options/wc-ebs-options.php:186
+msgid "Days"
+msgstr "Jours"
+
+#: options/wc-ebs-options.php:187
+msgid "Nights"
+msgstr "Nuits"
+
+#: options/wc-ebs-options.php:189
+msgid ""
+"Choose whether to calculate the final price depending on number of days or "
+"number of nights (i.e. 5 days = 4 nights)."
+msgstr ""
+"Choisissez de calculer le prix final selon le nombre de jours ou le nombre "
+"de nuits (i.e. 5 jours = 4 nuits)."
+
+#: options/wc-ebs-options.php:193
 msgid ""
 "Make this plugin yours by choosing the different texts you want to display !"
 msgstr ""
 "Personnalisez le plugin en choisissant les différents textes que vous "
 "souhaitez afficher !"
 
-#: options/wc-ebs-options.php:144
+#: options/wc-ebs-options.php:198
 msgid ""
 "Displays an information text before date inputs. Leave empty if you don't "
 "want the information text."
@@ -107,15 +133,15 @@ msgstr ""
 "Affiche un texte d'information avant le formulaire de réservation. Laissez "
 "vide si vous ne souhaitez pas afficher de texte d'information."
 
-#: options/wc-ebs-options.php:149
+#: options/wc-ebs-options.php:203
 msgid "Text displayed before the first date"
 msgstr "Texte à afficher avant la première date"
 
-#: options/wc-ebs-options.php:154
+#: options/wc-ebs-options.php:208
 msgid "Text displayed before the second date"
 msgstr "Texte à afficher avant la seconde date"
 
-#: options/wc-ebs-options.php:158
+#: options/wc-ebs-options.php:212
 msgid "Customize the calendar so it looks great with your theme !"
 msgstr ""
 "Customisez le calendrier afin qu'il se marie à merveille avec votre thème !"

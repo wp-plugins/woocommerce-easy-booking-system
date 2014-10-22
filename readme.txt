@@ -27,7 +27,7 @@ It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars an
 
 = 1.3 =
 
-### This update has a lot of modifications, please do not hesitate to tell me if it's not working on the support forum here https://wordpress.org/support/plugin/woocommerce-easy-booking-system.
+#### This update has a lot of modifications, please do not hesitate to tell me if it's not working on the support forum here https://wordpress.org/support/plugin/woocommerce-easy-booking-system.
 
 * Disabled dates before first date and dates after second dates, preventing users to select invalid dates
 * Prevent users to select the same date in "nights" mode

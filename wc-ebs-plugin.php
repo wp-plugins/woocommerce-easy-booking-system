@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-class WC_EBS extends WC_AJAX {
+class WC_EBS {
 
     public function __construct() {
 
@@ -20,7 +20,8 @@ class WC_EBS extends WC_AJAX {
         add_filter( 'woocommerce_get_price_html', array( $this, 'wc_ebs_add_price_html' ), 10, 2 );
         add_action( 'wp_ajax_add_new_price', array( $this, 'wc_ebs_get_new_price' ));
         add_action( 'wp_ajax_nopriv_add_new_price', array( $this, 'wc_ebs_get_new_price' ));
-        add_filter( 'add_to_cart_fragments', array( $this, 'wc_ebs_new_price_fragment' ));
+        add_action( 'wp_ajax_woocommerce_get_refreshed_fragments', array( $this, 'wc_ebs_new_price_fragment' ));
+        add_action( 'wp_ajax_nopriv_woocommerce_get_refreshed_fragments',  array( $this, 'wc_ebs_new_price_fragment' ));
         add_filter( 'woocommerce_loop_add_to_cart_link', array($this, 'wc_ebs_custom_loop_add_to_cart' ), 10, 2 );
     }
 
@@ -33,6 +34,8 @@ class WC_EBS extends WC_AJAX {
         
         // Load scripts only on product page if "booking" option is checked
         $wc_ebs_options = get_post_meta($post->ID, '_booking_option', true);
+        // Calculation mode (Days or Nights)
+        $calc_mode = $this->options['wc_ebs_calc_mode'];
 
         if ( is_product() && $wc_ebs_options ) {
 
@@ -52,7 +55,8 @@ class WC_EBS extends WC_AJAX {
             // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
             wp_localize_script( 'datepicker', 'ajax_object',
                 array( 
-                    'ajax_url' => admin_url( 'admin-ajax.php' )
+                    'ajax_url' => admin_url( 'admin-ajax.php' ),
+                    'calc_mode' => $calc_mode
                 )
             );
         }
@@ -129,9 +133,6 @@ class WC_EBS extends WC_AJAX {
         $product_id = isset($_POST['product_id']) && intval($_POST['product_id']) ? $_POST['product_id'] : $post->ID; // Product ID
 
         $wc_ebs_options = get_post_meta($product_id, '_booking_option', true); // Is it bookable ?
-        $duration = get_post_meta($product_id, '_booking_duration', true); // Booking duration
-        $new_price = get_post_meta($product_id, '_booking_price', true); // New booking price
-        $currency = get_woocommerce_currency_symbol(); // Currency
 
         // If bookable, return a price / day. If not, return normal price
         if ( isset( $wc_ebs_options ) && $wc_ebs_options == 'yes' ) {
@@ -144,24 +145,28 @@ class WC_EBS extends WC_AJAX {
 
     // Calculate new price, update product meta and refresh fragments
     public function wc_ebs_get_new_price() {
-
         global $woocommerce, $post;
 
         $product_id = isset($_POST['product_id']) && intval($_POST['product_id'] ) ? $_POST['product_id'] : ''; // Product ID
         $variation_id = isset($_POST['variation_id']) && intval($_POST['variation_id'] ) ? $_POST['variation_id'] : ''; // Variation ID
 
-        $days = isset($_POST['days']) && intval( $_POST['days'] ) ? $_POST['days'] : 1; // Booking duration
+        $days = isset($_POST['days']) && intval($_POST['days']) ? $_POST['days'] : 1; // Booking duration
         $calc_mode = $this->options['wc_ebs_calc_mode']; // Calculation mode (Days or Nights)
-
-        // If calculation mode is set to "Days", add one day
-        if ( $calc_mode == "days" ) {
-            $duration = $days + 1;
-        } else {
-            $duration = $days;
-        }
 
         $start_date = isset($_POST['start']) ? sanitize_text_field($_POST['start']) : ''; // Booking start date
         $end_date = isset($_POST['end']) ? sanitize_text_field($_POST['end']) : ''; // Booking end date
+
+        $start = isset($_POST['start_format']) && intval( $_POST['start_format'] ) ? $_POST['start_format'] : 1;
+        $end = isset($_POST['end_format']) && intval( $_POST['end_format'] ) ? $_POST['end_format'] : 1;
+
+        // If calculation mode is set to "Days", add one day
+        if ( $calc_mode == "days" && ( $start != $end ) ) {
+            $duration = $days + 1;
+        } elseif ( ( $calc_mode == "days" ) && ( $start == $end ) ) {
+            $duration = $days;
+        } else {
+            $duration = $days;
+        }
 
         $product = get_product( $product_id ); // Product object
         
@@ -182,6 +187,17 @@ class WC_EBS extends WC_AJAX {
 
         }
 
+        $array = array(
+            'new_price' => $new_price,
+            'duration' => $duration,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'start' => $start,
+            'end' => $end
+        );
+
+        $booking_data[$product_id] = $array;
+
         // If number of days is inferior to 0
         if ( $duration <= 0 )
             $error_code = 1;
@@ -200,11 +216,11 @@ class WC_EBS extends WC_AJAX {
 
         } else {
 
-            // Update product meta
-            $this->wc_ebs_update_product_meta( $product_id, $new_price, $duration, $start_date, $end_date );
+            // Update session data
+            WC()->session->set( 'booking', $booking_data );
 
             // Return fragments
-            $this->get_refreshed_fragments();
+            $this->wc_ebs_new_price_fragment();
 
         }
 
@@ -262,30 +278,38 @@ class WC_EBS extends WC_AJAX {
                 )
             );
 
-        echo json_encode( $data );
+        wp_send_json( $data );
 
         die();
 
     }
 
     // Update price fragment
-    public function wc_ebs_new_price_fragment( $fragments ) {
-
+    public function wc_ebs_new_price_fragment() {
         global $woocommerce, $post, $product;
+
+        header( 'Content-Type: application/json; charset=utf-8' );
         
         $product_id = isset($_POST['product_id']) && intval($_POST['product_id']) ? $_POST['product_id'] : '';
-        $new_price = get_post_meta($product_id, '_booking_price', true); // New booking price
+        $booking_session = WC()->session->get( 'booking' );
+        $new_price = $booking_session[$product_id]['new_price']; // New booking price
         $currency = get_woocommerce_currency_symbol(); // Currency
 
-        if ( get_post_meta($product_id, '_booking_duration', true) ) {
+        if ( $booking_session[$product_id]['duration'] ) {
 
             ob_start();
-                echo '<span class="price">' . sprintf( get_woocommerce_price_format(), $currency, $new_price ) . '</span>';
-            $fragments['span.price'] = ob_get_clean();
+            $fragments = ob_get_clean();
 
+                $data = array(
+                    'fragments' => apply_filters( 'wc_ebs_fragments', array(
+                        'span.price' => '<span class="price">' . sprintf( get_woocommerce_price_format(), $currency, $new_price ) . '</span>'
+                        )
+                    )
+                );
+
+            wp_send_json( $data );
+            die();
         }
-
-        return $fragments;
 
     }
 

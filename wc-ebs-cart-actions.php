@@ -11,25 +11,63 @@ class WC_EBS_Cart extends WC_Cart {
         // get plugin options values
         $this->options = get_option('wc_ebs_options');
         
+        add_filter('woocommerce_add_to_cart_validation', array($this, 'ebs_check_dates_before_add_to_cart'), 10, 3);
         add_filter('woocommerce_add_cart_item_data', array( $this, 'wc_ebs_add_cart_item_data'), 10, 2);
         add_filter('woocommerce_get_cart_item_from_session', array( $this, 'wc_ebs_get_cart_item_from_session'), 10, 2);
         add_filter('woocommerce_get_item_data', array( $this, 'wc_ebs_get_item_data'), 10, 2);
         add_filter('woocommerce_add_cart_item', array( $this, 'wc_ebs_add_cart_item'), 10, 1);
     }
 
+    // Check if two dates are set before adding to cart
+    public function ebs_check_dates_before_add_to_cart( $passed = true, $product_id, $quantity ) {
+        global $woocommerce;
+
+        $booking_session = WC()->session->get( 'booking' );
+        $wc_ebs_options = get_post_meta($product_id, '_booking_option', true);
+
+        // If product is bookable
+        if ( isset( $wc_ebs_options ) && $wc_ebs_options == "yes" ) {
+
+            if ( ! empty( $booking_session ) ) {
+                $start_date = $booking_session[$product_id]['start_date']; // Formated dates
+                $end_date = $booking_session[$product_id]['end_date']; // Formated dates
+            }
+
+            if ( isset( $start_date ) && isset( $end_date ) ) {
+                $passed = true;
+            } else {
+                wc_add_notice( __( 'Please choose two dates', 'wc_ebs' ), 'error' );
+                $passed = false;
+            }
+
+        }
+
+        return $passed;
+    }
+
     function wc_ebs_add_cart_item_data($cart_item_meta, $product_id) {
         global $woocommerce;
  
-        $booking_price = get_post_meta($product_id, '_booking_price', true);
-        $booking_duration = get_post_meta($product_id, '_booking_duration', true);
-        $start = get_post_meta($product_id, '_start_date', true);
-        $end = get_post_meta($product_id, '_end_date', true);
+        $booking_session = WC()->session->get( 'booking' );
 
-        $cart_item_meta['_booking_price'] = $booking_price;
-        $cart_item_meta['_start_date'] = $start;
-        $cart_item_meta['_end_date'] = $end;
+        if ( ! empty( $booking_session ) ) {
 
-        $this->wc_ebs_reset_product_meta( $product_id, $booking_duration, $booking_price, $start, $end );
+            $booking_price = $booking_session[$product_id]['new_price'];
+            $booking_duration = $booking_session[$product_id]['duration'];
+            $start_date = $booking_session[$product_id]['start_date']; // Formated dates
+            $end_date = $booking_session[$product_id]['end_date']; // Formated dates
+            $start = $booking_session[$product_id]['start'];
+            $end = $booking_session[$product_id]['end'];
+
+            $cart_item_meta['_booking_price'] = $booking_price;
+            $cart_item_meta['_start_date'] = $start_date;
+            $cart_item_meta['_end_date'] = $end_date;
+            $cart_item_meta['_ebs_start'] = $start;
+            $cart_item_meta['_ebs_end'] = $end;
+
+            WC()->session->set( 'booking', '' );
+            
+        }
 
         return $cart_item_meta;
     }
@@ -37,64 +75,38 @@ class WC_EBS_Cart extends WC_Cart {
     function wc_ebs_get_cart_item_from_session($cart_item, $values) {
 
         // Add the form options meta to the cart item in case you want to do special stuff on the check out page.
-        if (isset($values['_booking_price'])) {
+        if (isset($values['_booking_price']))
             $cart_item['_booking_price'] = $values['_booking_price'];
-        }
 
-        if (isset($values['_start_date'])) {
+        if (isset($values['_start_date']))
             $cart_item['_start_date'] = $values['_start_date'];
-        }
 
-        if (isset($values['_end_date'])) {
+        if (isset($values['_end_date']))
             $cart_item['_end_date'] = $values['_end_date'];
-        }
+
+        if (isset($values['_ebs_start']))
+            $cart_item['_ebs_start'] = $values['_ebs_start'];
+
+        if (isset($values['_ebs_end']))
+            $cart_item['_ebs_end'] = $values['_ebs_end'];
 
         $this->wc_ebs_add_cart_item($cart_item);
      
         return $cart_item;
     }
-
-    // Reset meta data after adding to cart
-    function wc_ebs_reset_product_meta( $product_id, $booking_duration, $booking_price, $start, $end ) {
-
-        if ( get_post_meta( $product_id, '_booking_duration', true ) ) {
-            delete_post_meta($product_id, '_booking_duration');
-        }
-
-        if ( get_post_meta( $product_id, '_booking_price', true ) ) {
-            delete_post_meta($product_id, '_booking_price');
-        }
-
-        if ( get_post_meta( $product_id, '_start_date', true ) ) {
-            delete_post_meta($product_id, '_start_date');
-        }
-
-        if ( get_post_meta( $product_id, '_end_date', true ) ) {
-            delete_post_meta($product_id, '_end_date');
-        }
-
-    }
  
     function wc_ebs_get_item_data($other_data, $cart_item) {
+        global $woocommerce;
 
         $start_text = ! empty( $this->options['wc_ebs_start_date_text'] ) ? $this->options['wc_ebs_start_date_text'] : __('Start', 'wc_ebs');
         $end_text = ! empty( $this->options['wc_ebs_end_date_text'] ) ? $this->options['wc_ebs_end_date_text'] : __('End', 'wc_ebs');
 
-        if ( isset($cart_item['_start_date']) && $cart_item['_start_date'] ) {
- 
-            $startDate = $cart_item['_start_date'];
+        // Add custom data to product data
+        if ( isset( $cart_item['_start_date'] ) && $cart_item['_start_date'] )
+            $other_data[] = array('name' => $start_text, 'value' => $cart_item['_start_date']);
 
-            // Add custom data to product data
-            $other_data[] = array('name' => $start_text, 'value' => $startDate);
-        }
-
-        if ( isset($cart_item['_end_date']) && $cart_item['_end_date'] ) {
-
-            $endDate = $cart_item['_end_date'];
-            
-            // Add custom data to product data
-            $other_data[] = array('name' => $end_text, 'value' => $endDate);
-        }
+        if ( isset( $cart_item['_end_date'] ) && $cart_item['_end_date'] )
+            $other_data[] = array('name' => $end_text, 'value' => $cart_item['_end_date']);
 
         return $other_data;
     }
@@ -102,7 +114,7 @@ class WC_EBS_Cart extends WC_Cart {
     function wc_ebs_add_cart_item($cart_item) {
         global $woocommerce;
  
-        if ( isset($cart_item['_booking_price']) && $cart_item['_booking_price'] > 0 ) {
+        if ( isset( $cart_item['_booking_price'] ) && $cart_item['_booking_price'] > 0 ) {
             $booking_price = $cart_item['_booking_price'];
             $cart_item['data']->set_price($booking_price);
         }
@@ -118,10 +130,11 @@ class WC_EBS_Checkout extends WC_Checkout {
 
     public function __construct() {
 
-        // get plugin options values
+        // Get plugin options values
         $this->options = get_option('wc_ebs_options');
 
         add_action('woocommerce_add_order_item_meta', array($this, 'wc_ebs_add_order_meta' ), 10, 2);
+        add_filter('woocommerce_hidden_order_itemmeta', array($this, 'wc_ebs_hide_formatted_date'), 10, 1);
 
     }
 
@@ -135,6 +148,20 @@ class WC_EBS_Checkout extends WC_Checkout {
 
         if ( ! empty( $values['_end_date'] ) )
             wc_add_order_item_meta( $item_id, $end_text, $values['_end_date'] );
+
+        if ( ! empty( $values['_ebs_start'] ) )
+            wc_add_order_item_meta( $item_id, '_ebs_start_format', $values['_ebs_start'] );
+
+        if ( ! empty( $values['_ebs_end'] ) )
+            wc_add_order_item_meta( $item_id, '_ebs_end_format', $values['_ebs_end'] );
+    }
+
+    public function wc_ebs_hide_formatted_date( $item_meta ) {
+
+        $item_meta[] = '_ebs_start_format';
+        $item_meta[] = '_ebs_end_format';
+
+        return $item_meta;
     }
 
 }

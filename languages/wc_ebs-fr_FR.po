@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Easy Booking System\n"
 "POT-Creation-Date: 2014-10-01 11:23+0100\n"
-"PO-Revision-Date: 2014-10-01 11:26+0100\n"
+"PO-Revision-Date: 2014-10-22 11:02+0100\n"
 "Last-Translator: \n"
 "Language-Team: Natasha Lavail\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgstr "Veuillez choisir des dates valides"
 
 #: wc-ebs-plugin.php:222
 msgid "Please choose two dates"
-msgstr "Veuillez indiquez deux dates"
+msgstr "Veuillez indiquer deux dates"
 
 #: wc-ebs-plugin.php:225
 msgid "Please select product option"

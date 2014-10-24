@@ -217,6 +217,7 @@ class WC_EBS {
         } else {
 
             // Update session data
+            WC()->session->set_customer_session_cookie(true);
             WC()->session->set( 'booking', $booking_data );
 
             // Return fragments
@@ -247,18 +248,6 @@ class WC_EBS {
         }
 
         return $err;
-    }
-
-    // Update product meta (New price, start date and end date)
-    public function wc_ebs_update_product_meta( $product_id, $new_price, $duration, $start_date, $end_date ) {
-
-        global $woocommerce;
-
-        add_post_meta( $product_id, '_booking_duration', $duration, true ) || update_post_meta( $product_id, '_booking_duration', $duration );
-        add_post_meta( $product_id, '_booking_price', $new_price, true ) || update_post_meta( $product_id, '_booking_price', $new_price );
-        add_post_meta( $product_id, '_start_date', $start_date, true ) || update_post_meta( $product_id, '_start_date', $start_date );
-        add_post_meta( $product_id, '_end_date', $end_date, true ) || update_post_meta( $product_id, '_end_date', $end_date );
-
     }
 
     // Update error messages with Ajax

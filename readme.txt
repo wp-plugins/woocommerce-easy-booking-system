@@ -3,7 +3,7 @@ Contributors: @natashalavail, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products
 Requires at least: 3.0, WooCommerce 2.2.4
 Tested up to: 4.0
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2 or later
 
 WooCommerce Easy Booking System allows users to add an option to book or rent their products.
@@ -24,6 +24,10 @@ It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars an
 8. And you're done !
 
 == Changelog ==
+
+= 1.3.1 =
+
+* Fixed an issue where products were not added to cart if the user was not logged in.
 
 = 1.3 =
 

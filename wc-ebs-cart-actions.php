@@ -11,7 +11,7 @@ class WC_EBS_Cart extends WC_Cart {
         // get plugin options values
         $this->options = get_option('wc_ebs_options');
         
-        add_filter('woocommerce_add_to_cart_validation', array($this, 'ebs_check_dates_before_add_to_cart'), 10, 3);
+        add_filter('woocommerce_add_to_cart_validation', array($this, 'ebs_check_dates_before_add_to_cart'), 20, 2);
         add_filter('woocommerce_add_cart_item_data', array( $this, 'wc_ebs_add_cart_item_data'), 10, 2);
         add_filter('woocommerce_get_cart_item_from_session', array( $this, 'wc_ebs_get_cart_item_from_session'), 10, 2);
         add_filter('woocommerce_get_item_data', array( $this, 'wc_ebs_get_item_data'), 10, 2);
@@ -19,7 +19,7 @@ class WC_EBS_Cart extends WC_Cart {
     }
 
     // Check if two dates are set before adding to cart
-    public function ebs_check_dates_before_add_to_cart( $passed = true, $product_id, $quantity ) {
+    public function ebs_check_dates_before_add_to_cart( $passed = true, $product_id ) {
         global $woocommerce;
 
         $booking_session = WC()->session->get( 'booking' );
@@ -29,12 +29,14 @@ class WC_EBS_Cart extends WC_Cart {
         if ( isset( $wc_ebs_options ) && $wc_ebs_options == "yes" ) {
 
             if ( ! empty( $booking_session ) ) {
+
                 $start_date = $booking_session[$product_id]['start_date']; // Formated dates
                 $end_date = $booking_session[$product_id]['end_date']; // Formated dates
-            }
+            
+                if ( isset( $start_date ) && isset( $end_date ) ) {
+                    $passed = true;
+                } 
 
-            if ( isset( $start_date ) && isset( $end_date ) ) {
-                $passed = true;
             } else {
                 wc_add_notice( __( 'Please choose two dates', 'wc_ebs' ), 'error' );
                 $passed = false;

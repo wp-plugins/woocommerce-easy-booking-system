@@ -3,7 +3,7 @@ Contributors: @natashalavail, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products
 Requires at least: 3.0, WooCommerce 2.2.4
 Tested up to: 4.0
-Stable tag: 1.3.1
+Stable tag: 1.4
 License: GPLv2 or later
 
 WooCommerce Easy Booking System allows users to add an option to book or rent their products.
@@ -18,12 +18,25 @@ It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars an
 
 1. Install the "WooCommerce Easy Booking System" Plugin
 2. Activate the plugin
-7. Go to the WooCommerce Easy Booking System option page to set up the texts and colors you want to display
-3. Go to the WooCommerce Product Page your want to allow for booking or renting
-4. Check the "Bookable" box next to the product type dropdown
-8. And you're done !
+3. Go to the WooCommerce Easy Booking System option page to set up the texts and colors you want to display
+4. Go to the WooCommerce Product Page your want to allow for booking or renting
+5. Check the "Bookable" box next to the product type dropdown
+6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page.
+7. And you're done !
 
 == Changelog ==
+
+= 1.4 =
+
+* Add - Option to set a minimum and a maximum booking duration for each product.
+* Add - Possibility to change booking dates on the order page.
+* Add - Possibility to add booking products on the order page.
+* Add - en_GB translation file for the calendar.
+* Add - WooCommerce Currency Switcher Compatibility
+* Fix - Timezone issue with the datepicker.
+* Fix - Prevent adding a product to the cart after clicking the "clear" button on the calendar.
+* Fix - Incorrect selected dates with keyboard.
+* Fix - Wrong price displayed when "Price excluding tax" is set on the product page.
 
 = 1.3.1 =
 
@@ -80,3 +93,5 @@ It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars an
 
 = 1.0 =
 * Initial Release
+
+D:/Dropbox/Dropbox/WordPress/EasyBookingSystem

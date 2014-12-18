@@ -15,7 +15,7 @@ class WC_EBS_settings {
 		if ( !$this->options ) {
 		
 		    $this->options = array( 'wc_ebs_calc_mode' => 'nights',
-		    						'wc_ebs_info_text' => '',
+		    						'wc_ebs_info_text' => __('', 'wc_ebs'),
 		    						'wc_ebs_start_date_text' => __('Start', 'wc_ebs'), 
 		                            'wc_ebs_end_date_text' => __('End', 'wc_ebs'),
 		                            'wc_ebs_background_color' => '#FFFFFF',
@@ -43,7 +43,7 @@ class WC_EBS_settings {
 
 	public function load_admin_scripts() {
 	  	wp_enqueue_style('wp-color-picker');
-	  	wp_enqueue_script('color-picker', plugins_url('js/script.js', dirname(__FILE__)), array('wp-color-picker'), false, true );
+	  	wp_enqueue_script('color-picker', plugins_url('js/admin/script.js', dirname(__FILE__)), array('wp-color-picker'), false, true );
 	}
 
 	public function generate_options_css( $newdata ) {
@@ -95,7 +95,7 @@ class WC_EBS_settings {
 		add_settings_field(
 			'wc_ebs_info_text',
 			__('Information text', 'wc_ebs'),
-			array( $this, 'wc_ebs_info_text' ),
+			array( $this, 'wc_ebs_info' ),
 			'wc_ebs_options',
 			'wc_ebs_main_text'
 		);
@@ -148,7 +148,7 @@ class WC_EBS_settings {
 		);
 
 		$data = get_option('wc_ebs_options');
-		$this->generate_options_css( $data ); //generate static css file
+		$this->generate_options_css( $data ); // Generate static css file
 
 	}
 
@@ -193,18 +193,18 @@ class WC_EBS_settings {
 		echo '<p>' . __('Make this plugin yours by choosing the different texts you want to display !', 'wc_ebs') . '</p>';
 	}
 
-	public function wc_ebs_info_text() {
-		echo '<textarea id="plugin_text_string" name="wc_ebs_options[wc_ebs_info_text]" rows="4" cols="50" />' . $this->options['wc_ebs_info_text'] . '</textarea>
+	public function wc_ebs_info() {
+		echo '<textarea id="wc_ebs_text_info" name="wc_ebs_options[wc_ebs_info_text]" rows="4" cols="50" />' . $this->options['wc_ebs_info_text'] . '</textarea>
 		<p class="description">' . __('Displays an information text before date inputs. Leave empty if you don\'t want the information text.' , 'wc_ebs') . '</p>';
 	}
 
 	public function wc_ebs_start_date() {
-		echo '<input id="plugin_text_string" name="wc_ebs_options[wc_ebs_start_date_text]" size="40" type="text" value="' . $this->options['wc_ebs_start_date_text'] . '" />
+		echo '<input id="wc_ebs_start_date_text" name="wc_ebs_options[wc_ebs_start_date_text]" size="40" type="text" value="' . $this->options['wc_ebs_start_date_text'] . '" />
 		<p class="description">' . __('Text displayed before the first date', 'wc_ebs') . '</p>';
 	}
 
 	public function wc_ebs_end_date() {
-		echo '<input id="plugin_text_string" name="wc_ebs_options[wc_ebs_end_date_text]" size="40" type="text" value="' . $this->options['wc_ebs_end_date_text'] . '" />
+		echo '<input id="wc_ebs_end_date_text" name="wc_ebs_options[wc_ebs_end_date_text]" size="40" type="text" value="' . $this->options['wc_ebs_end_date_text'] . '" />
 		<p class="description">' . __('Text displayed before the second date', 'wc_ebs') . '</p>';
 	}
 

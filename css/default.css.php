@@ -59,7 +59,6 @@ function adjustBrightness($hex, $steps) {
 .picker__input {
   cursor: default;
 }
-}
 /**
  * When the picker is opened, the input element is “activated”.
  */
@@ -315,6 +314,7 @@ function adjustBrightness($hex, $steps) {
  * The calendar table of dates
  */
 .picker__table {
+  background: none;
   text-align: center;
   border-collapse: collapse;
   border-spacing: 0;

@@ -28,7 +28,7 @@ class WC_EBS_Cart extends WC_Cart {
         // If product is bookable
         if ( isset( $wc_ebs_options ) && $wc_ebs_options == "yes" ) {
 
-            if ( ! empty( $booking_session ) ) {
+            if ( isset( $booking_session[$product_id] ) && ! empty( $booking_session[$product_id] ) ) {
 
                 $start_date = $booking_session[$product_id]['start_date']; // Formated dates
                 $end_date = $booking_session[$product_id]['end_date']; // Formated dates
@@ -52,7 +52,7 @@ class WC_EBS_Cart extends WC_Cart {
  
         $booking_session = WC()->session->get( 'booking' );
 
-        if ( ! empty( $booking_session ) ) {
+        if ( isset( $booking_session[$product_id] ) && ! empty( $booking_session[$product_id] ) ) {
 
             $booking_price = $booking_session[$product_id]['new_price'];
             $booking_duration = $booking_session[$product_id]['duration'];
@@ -145,11 +145,15 @@ class WC_EBS_Checkout extends WC_Checkout {
         $start_text = ! empty( $this->options['wc_ebs_start_date_text'] ) ? $this->options['wc_ebs_start_date_text'] : __('Start', 'wc_ebs');
         $end_text = ! empty( $this->options['wc_ebs_end_date_text'] ) ? $this->options['wc_ebs_end_date_text'] : __('End', 'wc_ebs');
 
-        if ( ! empty( $values['_start_date'] ) )
+        if ( ! empty( $values['_start_date'] ) ) {
             wc_add_order_item_meta( $item_id, $start_text, $values['_start_date'] );
+            wc_add_order_item_meta( $item_id, '_ebs_start_display', $values['_start_date'] );
+        }
 
-        if ( ! empty( $values['_end_date'] ) )
+        if ( ! empty( $values['_end_date'] ) ) {
             wc_add_order_item_meta( $item_id, $end_text, $values['_end_date'] );
+            wc_add_order_item_meta( $item_id, '_ebs_end_display', $values['_end_date'] );
+        }
 
         if ( ! empty( $values['_ebs_start'] ) )
             wc_add_order_item_meta( $item_id, '_ebs_start_format', $values['_ebs_start'] );
@@ -160,6 +164,13 @@ class WC_EBS_Checkout extends WC_Checkout {
 
     public function wc_ebs_hide_formatted_date( $item_meta ) {
 
+        $start_text = ! empty( $this->options['wc_ebs_start_date_text'] ) ? $this->options['wc_ebs_start_date_text'] : __('Start', 'wc_ebs');
+        $end_text = ! empty( $this->options['wc_ebs_end_date_text'] ) ? $this->options['wc_ebs_end_date_text'] : __('End', 'wc_ebs');
+
+        $item_meta[] = $start_text;
+        $item_meta[] = $end_text;
+        $item_meta[] = '_ebs_start_display';
+        $item_meta[] = '_ebs_end_display';
         $item_meta[] = '_ebs_start_format';
         $item_meta[] = '_ebs_end_format';
 

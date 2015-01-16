@@ -11,18 +11,43 @@ class WC_EBS {
         // Get plugin options values
         $this->options = get_option('wc_ebs_options');
 
-        if ( !is_admin() )
+        if ( ! is_admin() )
             add_action( 'wp_enqueue_scripts', array( $this, 'wc_ebs_enqueue_scripts' ));
 
+        add_action( 'admin_enqueue_scripts', array( $this, 'wc_ebs_enqueue_admin_scripts' ));
         add_action( 'product_type_options', array( $this, 'wc_ebs_add_product_option_pricing' ));
+        add_filter( 'woocommerce_product_data_tabs', array( $this, 'wc_ebs_add_booking_tab' ), 10, 1);
+        add_action( 'woocommerce_product_data_panels', array($this, 'wc_ebs_add_booking_data_panel'));
         add_filter( 'woocommerce_process_product_meta', array( $this, 'wc_ebs_add_custom_price_fields_save' ));
         add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'wc_ebs_before_add_to_cart_button' ));
         add_filter( 'woocommerce_get_price_html', array( $this, 'wc_ebs_add_price_html' ), 10, 2 );
         add_action( 'wp_ajax_add_new_price', array( $this, 'wc_ebs_get_new_price' ));
         add_action( 'wp_ajax_nopriv_add_new_price', array( $this, 'wc_ebs_get_new_price' ));
+        add_action( 'wp_ajax_clear_booking_session', array( $this, 'wc_ebs_clear_booking_session' ));
+        add_action( 'wp_ajax_nopriv_clear_booking_session', array( $this, 'wc_ebs_clear_booking_session' ));
         add_action( 'wp_ajax_woocommerce_get_refreshed_fragments', array( $this, 'wc_ebs_new_price_fragment' ));
         add_action( 'wp_ajax_nopriv_woocommerce_get_refreshed_fragments',  array( $this, 'wc_ebs_new_price_fragment' ));
         add_filter( 'woocommerce_loop_add_to_cart_link', array($this, 'wc_ebs_custom_loop_add_to_cart' ), 10, 2 );
+    }
+
+    public function wc_ebs_enqueue_admin_scripts() {
+        global $woocommerce, $post;
+
+        $screen = get_current_screen();
+
+        if ( in_array( $screen->id, array( 'product' ) ) ) {
+            $wc_ebs_options = get_post_meta($post->ID, '_booking_option', true);
+
+            wp_enqueue_script( 'ebs-admin-product', plugins_url('/js/admin/ebs-admin-product.min.js', __FILE__), array('jquery'), '1.0', true );
+            // wp_enqueue_script( 'ebs-admin-product', plugins_url('/js/admin/ebs-admin-product.js', __FILE__), array('jquery'), '1.0', true );
+
+            wp_localize_script( 'ebs-admin-product', 'options',
+                array( 
+                    'booking_option' => $wc_ebs_options
+                )
+            );
+        }
+
     }
 
     public function wc_ebs_enqueue_scripts() {
@@ -39,24 +64,32 @@ class WC_EBS {
 
         if ( is_product() && $wc_ebs_options ) {
 
-            // Concatenated and minified script including datepick.js, legacy.js, picker.js and picker.date.js
-            wp_enqueue_script( 'datepicker', plugins_url( '/js/pickadate.min.js', __FILE__ ), array('jquery'), '1.0', true);
+            $booking_min = get_post_meta($post->ID, '_booking_min', true) ? get_post_meta($post->ID, '_booking_min', true) : 0;
+            $booking_max = get_post_meta($post->ID, '_booking_max', true) ? get_post_meta($post->ID, '_booking_max', true) : 0;
+            $first_available_date = get_post_meta($post->ID, '_first_available_date', true) ? get_post_meta($post->ID, '_first_available_date', true) : 0;
 
+            // Concatenated and minified script including picker.js, picker.date.js and legacy.js
+            wp_enqueue_script( 'pickadate', plugins_url( '/js/pickadate.min.js', __FILE__ ), array('jquery'), '1.0', true);
             // wp_enqueue_script( 'picker', plugins_url( '/js/picker.js', __FILE__ ), array('jquery'), '1.0', true);
             // wp_enqueue_script( 'picker.date', plugins_url( '/js/picker.date.js', __FILE__ ), array('jquery'), '1.0', true);
             // wp_enqueue_script( 'legacy', plugins_url( '/js/legacy.js', __FILE__ ), array('jquery'), '1.0', true);
-            // wp_enqueue_script( 'datepick', plugins_url( '/js/datepick.js', __FILE__ ), array('jquery'), '1.0', true);
 
-            wp_enqueue_script( 'datepicker.language', plugins_url( '/js/translations/' . $lang . '.js', __FILE__ ), array('jquery'), '1.0', true);
+            wp_enqueue_script( 'pickadate-custom', plugins_url( '/js/pickadate-custom.min.js', __FILE__ ), array('jquery', 'pickadate'), '1.0', true);
+            // wp_enqueue_script( 'pickadate-custom', plugins_url( '/js/pickadate-custom.js', __FILE__ ), array('jquery', 'pickadate'), '1.0', true);
+
+            wp_enqueue_script( 'datepicker.language', plugins_url( '/js/translations/' . $lang . '.js', __FILE__ ), array('jquery', 'pickadate', 'pickadate-custom'), '1.0', true);
 
             wp_register_style( 'picker', plugins_url('/css/default.min.css', __FILE__), true);
             wp_enqueue_style( 'picker' );
 
             // in javascript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
-            wp_localize_script( 'datepicker', 'ajax_object',
+            wp_localize_script( 'pickadate-custom', 'ajax_object',
                 array( 
                     'ajax_url' => admin_url( 'admin-ajax.php' ),
-                    'calc_mode' => $calc_mode
+                    'calc_mode' => $calc_mode,
+                    'min' => $booking_min,
+                    'max' => $booking_max,
+                    'first_date' => $first_available_date
                 )
             );
         }
@@ -77,10 +110,83 @@ class WC_EBS {
         return $product_type_options;
     }
 
+    public function wc_ebs_add_booking_tab($product_data_tabs ) {
+        global $post;
+
+        $product_data_tabs['wc_ebs'] = array(
+                'label'  => __( 'Bookings', 'wc_ebs' ),
+                'target' => 'booking_product_data',
+                'class'  => array( 'show_if_bookable' ),
+        );
+
+        return $product_data_tabs;
+    }
+
+    public function wc_ebs_add_booking_data_panel() {
+        global $post;
+
+        echo '<div id="booking_product_data" class="panel woocommerce_options_panel">
+
+        <div class="options_group">';
+
+            woocommerce_wp_text_input( array(
+                'id' => '_booking_min',
+                'label' => __( 'Minimum booking duration', 'wc_ebs' ),
+                'desc_tip' => 'true',
+                'description' => __( 'Leave zero or empty to set no duration limit', 'wc_ebs' ),
+                'value' => intval( $post->_booking_min ),
+                'type' => 'number',
+                'custom_attributes' => array(
+                    'step'  => '1',
+                    'min' => '0'
+                ) ) );
+
+            woocommerce_wp_text_input( array(
+                'id' => '_booking_max',
+                'label' => __( 'Maximum booking duration', 'wc_ebs' ),
+                'desc_tip' => 'true',
+                'description' => __( 'Leave zero or empty to set no duration limit', 'wc_ebs' ),
+                'value' => intval( $post->_booking_max ),
+                'type' => 'number',
+                'custom_attributes' => array(
+                    'step'  => '1',
+                    'min' => '0'
+                ) ) );
+
+            woocommerce_wp_text_input( array(
+                'id' => '_first_available_date',
+                'label' => __( 'First available date', 'wc_ebs' ),
+                'desc_tip' => 'true',
+                'description' => __( 'First available date, relative to today. I.e. : today + 5 days. Leave zero or empty for today.', 'wc_ebs' ),
+                'value' => intval( $post->_first_available_date ),
+                'type' => 'number',
+                'custom_attributes' => array(
+                    'step'  => '1',
+                    'min' => '0'
+                ) ) );
+
+        echo '</div>
+
+        </div>';
+
+    }
+
     // Save checkbox value to the product admin page
     public function wc_ebs_add_custom_price_fields_save( $post_id ) {
 
         $woocommerce_checkbox = isset( $_POST['_booking_option'] ) ? 'yes' : '';
+        $booking_min = isset( $_POST['_booking_min'] ) && intval( $_POST['_booking_min'] ) ? $_POST['_booking_min'] : 0;
+        $booking_max = isset( $_POST['_booking_max'] ) && intval( $_POST['_booking_max'] ) ? $_POST['_booking_max'] : 0;
+        $first_available_date = isset( $_POST['_first_available_date'] ) && intval( $_POST['_first_available_date'] ) ? $_POST['_first_available_date'] : 0;
+
+        if ( $booking_min != 0 && $booking_max != 0 && $booking_min > $booking_max ) {
+            WC_Admin_Meta_Boxes::add_error( __( 'Minimum booking duration must be inferior to maximum booking duration', 'wc_ebs' ) );
+        } else {
+            update_post_meta( $post_id, '_booking_min', $booking_min );
+            update_post_meta( $post_id, '_booking_max', $booking_max );
+        }
+
+        update_post_meta( $post_id, '_first_available_date', $first_available_date );
         update_post_meta( $post_id, '_booking_option', $woocommerce_checkbox );
 
     }
@@ -91,9 +197,11 @@ class WC_EBS {
 
         // Is product bookable ?
         $wc_ebs_options = get_post_meta($post->ID, '_booking_option', true);
-        $info_text = $this->options['wc_ebs_info_text'];
+        $info_text = wpautop( wptexturize( $this->options['wc_ebs_info_text'] ) );
         $start_date_text = $this->options['wc_ebs_start_date_text'];
         $end_date_text = $this->options['wc_ebs_end_date_text'];
+        $product_price = $product->get_price();
+        $currency = get_woocommerce_currency_symbol(); // Currency
 
         // Product is bookable
         if ( isset($wc_ebs_options) && $wc_ebs_options == 'yes' ) {
@@ -101,7 +209,7 @@ class WC_EBS {
             // Display info text
             if ( isset( $info_text ) && ! empty ( $info_text ) ) {
                 echo apply_filters( 'wc_ebs_before_picker_form',
-                    '<p class="woocommerce-info">' . esc_html__( $info_text ) . '</p>', $info_text );
+                    '<div class="woocommerce-info">' . $info_text . '</div>', $info_text );
             }
 
             echo '<div class="wc_ebs_errors">' . wc_print_notices() . '</div>';
@@ -109,18 +217,18 @@ class WC_EBS {
             // Please do not remove inputs' attributes (classes, ids, etc.)
             echo apply_filters( 'wc_ebs_picker_form',
                 '<p>
-                    <label for="start_date">' . esc_html__( $start_date_text ) . ' : </label>
+                    <label for="start_date">' . $start_date_text . ' : </label>
                     <input type="hidden" id="variation_id" name="variation_id" data-product_id="' . $product->id . '" value="">
                     <input type="text" id="start_date" class="datepicker datepicker_start" data-value="">
                 </p>
                 <p>
-                    <label for="end_date">' . esc_html__( $end_date_text ) . ' : </label>
+                    <label for="end_date">' . $end_date_text . ' : </label>
                     <input type="text" id="end_date" class="datepicker datepicker_end" data-value="">
                 </p>', $start_date_text, $end_date_text );
 
             // If product is not variable, add a new price field before add to cart button
             if ( ! $product->is_type( 'variable' ) )
-                echo '<p class="booking_price"><span class="price"></span></p>';
+                echo '<p class="booking_price"><span class="price">' . sprintf( get_woocommerce_price_format(), $currency, $product_price ) . '</span></p>';
 
         }
     }
@@ -147,17 +255,17 @@ class WC_EBS {
     public function wc_ebs_get_new_price() {
         global $woocommerce, $post;
 
-        $product_id = isset($_POST['product_id']) && intval($_POST['product_id'] ) ? $_POST['product_id'] : ''; // Product ID
-        $variation_id = isset($_POST['variation_id']) && intval($_POST['variation_id'] ) ? $_POST['variation_id'] : ''; // Variation ID
+        $product_id = isset( $_POST['product_id'] ) && intval( $_POST['product_id'] ) ? $_POST['product_id'] : ''; // Product ID
+        $variation_id = isset( $_POST['variation_id'] ) && intval( $_POST['variation_id'] ) ? $_POST['variation_id'] : ''; // Variation ID
 
-        $days = isset($_POST['days']) && intval($_POST['days']) ? $_POST['days'] : 1; // Booking duration
+        $days = isset( $_POST['days'] ) && intval( $_POST['days'] ) ? $_POST['days'] : 1; // Booking duration
         $calc_mode = $this->options['wc_ebs_calc_mode']; // Calculation mode (Days or Nights)
 
-        $start_date = isset($_POST['start']) ? sanitize_text_field($_POST['start']) : ''; // Booking start date
-        $end_date = isset($_POST['end']) ? sanitize_text_field($_POST['end']) : ''; // Booking end date
+        $start_date = isset( $_POST['start'] ) ? sanitize_text_field( $_POST['start'] ) : ''; // Booking start date
+        $end_date = isset( $_POST['end'] ) ? sanitize_text_field( $_POST['end'] ) : ''; // Booking end date
 
-        $start = isset($_POST['start_format']) && intval( $_POST['start_format'] ) ? $_POST['start_format'] : 1;
-        $end = isset($_POST['end_format']) && intval( $_POST['end_format'] ) ? $_POST['end_format'] : 1;
+        $start = isset( $_POST['start_format'] ) ? sanitize_text_field( $_POST['start_format'] ) : ''; // Booking start date 'yyyy-mm-dd'
+        $end = isset( $_POST['end_format'] ) ? sanitize_text_field( $_POST['end_format'] ) : ''; // Booking end date 'yyyy-mm-dd'
 
         // If calculation mode is set to "Days", add one day
         if ( $calc_mode == "days" && ( $start != $end ) ) {
@@ -169,6 +277,8 @@ class WC_EBS {
         }
 
         $product = get_product( $product_id ); // Product object
+
+        $tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
         
         // If product is variable, get variation price
         if ( $product->is_type( 'variable' ) ) {
@@ -177,12 +287,12 @@ class WC_EBS {
                 $error_code = 3;
 
             $variable_product = new WC_Product_Variation( $variation_id );
-            $variation_price = $variable_product->price;
+            $variation_price = $tax_display_mode == 'incl' ? $variable_product->get_price_including_tax() : $variable_product->get_price_excluding_tax();
             $new_price = $variation_price * $duration;
 
         } else {
 
-            $price = get_post_meta($product_id,'_price', true); // Product price (Regular or sale)
+            $price = $tax_display_mode == 'incl' ? $product->get_price_including_tax() : $product->get_price_excluding_tax(); // Product price (Regular or sale)
             $new_price = $price * $duration;
 
         }
@@ -227,6 +337,11 @@ class WC_EBS {
 
         die();
 
+    }
+
+    // Clear session if "Clear" button is clicked on the calendar
+    public function wc_ebs_clear_booking_session() {
+        WC()->session->set( 'booking', '' );
     }
 
     // Get error messages
@@ -283,6 +398,16 @@ class WC_EBS {
         $booking_session = WC()->session->get( 'booking' );
         $new_price = $booking_session[$product_id]['new_price']; // New booking price
         $currency = get_woocommerce_currency_symbol(); // Currency
+
+        // WooCommerce Currency Switcher compatibility
+        if ( class_exists('WOOCS') ){
+            global $WOOCS;
+
+            $currencies = $WOOCS->get_currencies();
+            $new_price = $new_price * $currencies[$WOOCS->current_currency]['rate'];
+            $new_price = number_format($new_price, 2, $WOOCS->decimal_sep, $WOOCS->thousands_sep);
+            $currency = $currencies[$WOOCS->current_currency]['symbol'];
+        }
 
         if ( $booking_session[$product_id]['duration'] ) {
 

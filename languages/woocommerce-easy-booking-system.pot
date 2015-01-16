@@ -1,0 +1,157 @@
+# Copyright (C) 2014 Woocommerce easy booking system
+# This file is distributed under the same license as the Woocommerce easy booking system package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Woocommerce easy booking system 1.3.1\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/woocommerce-easy-booking-"
+"system\n"
+"POT-Creation-Date: 2014-12-16 09:26:53+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: options/wc-ebs-options.php:19 wc-ebs-cart-actions.php:103
+#: wc-ebs-cart-actions.php:145
+msgid "Start"
+msgstr ""
+
+#: options/wc-ebs-options.php:20 wc-ebs-cart-actions.php:104
+#: wc-ebs-cart-actions.php:146
+msgid "End"
+msgstr ""
+
+#: options/wc-ebs-options.php:75
+msgid "General settings"
+msgstr ""
+
+#: options/wc-ebs-options.php:82
+msgid "Calculation mode"
+msgstr ""
+
+#: options/wc-ebs-options.php:90
+msgid "Text settings"
+msgstr ""
+
+#: options/wc-ebs-options.php:97
+msgid "Information text"
+msgstr ""
+
+#: options/wc-ebs-options.php:105
+msgid "First date title"
+msgstr ""
+
+#: options/wc-ebs-options.php:113
+msgid "Second date title"
+msgstr ""
+
+#: options/wc-ebs-options.php:121
+msgid "Color settings"
+msgstr ""
+
+#: options/wc-ebs-options.php:128
+msgid "Background color"
+msgstr ""
+
+#: options/wc-ebs-options.php:136
+msgid "Main color"
+msgstr ""
+
+#: options/wc-ebs-options.php:144
+msgid "Text color"
+msgstr ""
+
+#: options/wc-ebs-options.php:161
+msgid "WooCommerce Easy Booking System options"
+msgstr ""
+
+#: options/wc-ebs-options.php:186
+msgid "Days"
+msgstr ""
+
+#: options/wc-ebs-options.php:187
+msgid "Nights"
+msgstr ""
+
+#: options/wc-ebs-options.php:189
+msgid ""
+"Choose whether to calculate the final price depending on number of days or "
+"number of nights (i.e. 5 days = 4 nights)."
+msgstr ""
+
+#: options/wc-ebs-options.php:193
+msgid ""
+"Make this plugin yours by choosing the different texts you want to display !"
+msgstr ""
+
+#: options/wc-ebs-options.php:198
+msgid ""
+"Displays an information text before date inputs. Leave empty if you don't "
+"want the information text."
+msgstr ""
+
+#: options/wc-ebs-options.php:203
+msgid "Text displayed before the first date"
+msgstr ""
+
+#: options/wc-ebs-options.php:208
+msgid "Text displayed before the second date"
+msgstr ""
+
+#: options/wc-ebs-options.php:212
+msgid "Customize the calendar so it looks great with your theme !"
+msgstr ""
+
+#: wc-ebs-cart-actions.php:41 wc-ebs-plugin.php:240
+msgid "Please choose two dates"
+msgstr ""
+
+#: wc-ebs-plugin.php:72
+msgid "Bookable"
+msgstr ""
+
+#: wc-ebs-plugin.php:73
+msgid "Bookable products can be rent or booked on a daily schedule"
+msgstr ""
+
+#: wc-ebs-plugin.php:139
+msgid " / day"
+msgstr ""
+
+#: wc-ebs-plugin.php:237
+msgid "Please choose valid dates"
+msgstr ""
+
+#: wc-ebs-plugin.php:243
+msgid "Please select product option"
+msgstr ""
+
+#: wc-ebs-plugin.php:315
+msgid "Select dates"
+msgstr ""
+
+#: woocommerce-easy-booking-system.php:28
+msgid "Settings"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Woocommerce easy booking system"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://wordpress.org/plugins/woocommerce-easy-booking-system/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Allows users to rent or book products"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Natasha Lavail"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://ashanna.com"
+msgstr ""

@@ -1,8 +1,13 @@
 (function($) {
 	$(document).ready(function() {
 
+		firstDay = +ajax_object.first_date;
+
+		if ( firstDay == 0 )
+			firstDay = true;
+
 		$input = $('.datepicker').pickadate({
-			min: true,
+			min: firstDay,
           	close: '',
           	formatSubmit: 'yyyy-mm-dd'
 		});

@@ -66,6 +66,7 @@ class WC_EBS {
 
             $booking_min = get_post_meta($post->ID, '_booking_min', true) ? get_post_meta($post->ID, '_booking_min', true) : 0;
             $booking_max = get_post_meta($post->ID, '_booking_max', true) ? get_post_meta($post->ID, '_booking_max', true) : 0;
+            $first_available_date = get_post_meta($post->ID, '_first_available_date', true) ? get_post_meta($post->ID, '_first_available_date', true) : 0;
 
             // Concatenated and minified script including picker.js, picker.date.js and legacy.js
             wp_enqueue_script( 'pickadate', plugins_url( '/js/pickadate.min.js', __FILE__ ), array('jquery'), '1.0', true);
@@ -87,7 +88,8 @@ class WC_EBS {
                     'ajax_url' => admin_url( 'admin-ajax.php' ),
                     'calc_mode' => $calc_mode,
                     'min' => $booking_min,
-                    'max' => $booking_max
+                    'max' => $booking_max,
+                    'first_date' => $first_available_date
                 )
             );
         }
@@ -151,6 +153,18 @@ class WC_EBS {
                     'min' => '0'
                 ) ) );
 
+            woocommerce_wp_text_input( array(
+                'id' => '_first_available_date',
+                'label' => __( 'First available date', 'wc_ebs' ),
+                'desc_tip' => 'true',
+                'description' => __( 'First available date, relative to today. I.e. : today + 5 days. Leave zero or empty for today.', 'wc_ebs' ),
+                'value' => intval( $post->_first_available_date ),
+                'type' => 'number',
+                'custom_attributes' => array(
+                    'step'  => '1',
+                    'min' => '0'
+                ) ) );
+
         echo '</div>
 
         </div>';
@@ -163,6 +177,7 @@ class WC_EBS {
         $woocommerce_checkbox = isset( $_POST['_booking_option'] ) ? 'yes' : '';
         $booking_min = isset( $_POST['_booking_min'] ) && intval( $_POST['_booking_min'] ) ? $_POST['_booking_min'] : 0;
         $booking_max = isset( $_POST['_booking_max'] ) && intval( $_POST['_booking_max'] ) ? $_POST['_booking_max'] : 0;
+        $first_available_date = isset( $_POST['_first_available_date'] ) && intval( $_POST['_first_available_date'] ) ? $_POST['_first_available_date'] : 0;
 
         if ( $booking_min != 0 && $booking_max != 0 && $booking_min > $booking_max ) {
             WC_Admin_Meta_Boxes::add_error( __( 'Minimum booking duration must be inferior to maximum booking duration', 'wc_ebs' ) );
@@ -171,6 +186,7 @@ class WC_EBS {
             update_post_meta( $post_id, '_booking_max', $booking_max );
         }
 
+        update_post_meta( $post_id, '_first_available_date', $first_available_date );
         update_post_meta( $post_id, '_booking_option', $woocommerce_checkbox );
 
     }
@@ -184,6 +200,8 @@ class WC_EBS {
         $info_text = wpautop( wptexturize( $this->options['wc_ebs_info_text'] ) );
         $start_date_text = $this->options['wc_ebs_start_date_text'];
         $end_date_text = $this->options['wc_ebs_end_date_text'];
+        $product_price = $product->get_price();
+        $currency = get_woocommerce_currency_symbol(); // Currency
 
         // Product is bookable
         if ( isset($wc_ebs_options) && $wc_ebs_options == 'yes' ) {
@@ -210,7 +228,7 @@ class WC_EBS {
 
             // If product is not variable, add a new price field before add to cart button
             if ( ! $product->is_type( 'variable' ) )
-                echo '<p class="booking_price"><span class="price"></span></p>';
+                echo '<p class="booking_price"><span class="price">' . sprintf( get_woocommerce_price_format(), $currency, $product_price ) . '</span></p>';
 
         }
     }

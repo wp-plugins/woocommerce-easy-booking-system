@@ -15,7 +15,7 @@ class WC_EBS_settings {
 		if ( !$this->options ) {
 		
 		    $this->options = array( 'wc_ebs_calc_mode' => 'nights',
-		    						'wc_ebs_info_text' => __('', 'wc_ebs'),
+		    						'wc_ebs_info_text' => '',
 		    						'wc_ebs_start_date_text' => __('Start', 'wc_ebs'), 
 		                            'wc_ebs_end_date_text' => __('End', 'wc_ebs'),
 		                            'wc_ebs_background_color' => '#FFFFFF',

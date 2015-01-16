@@ -28,7 +28,7 @@ class WC_EBS_Cart extends WC_Cart {
         // If product is bookable
         if ( isset( $wc_ebs_options ) && $wc_ebs_options == "yes" ) {
 
-            if ( ! empty( $booking_session ) ) {
+            if ( isset( $booking_session[$product_id] ) && ! empty( $booking_session[$product_id] ) ) {
 
                 $start_date = $booking_session[$product_id]['start_date']; // Formated dates
                 $end_date = $booking_session[$product_id]['end_date']; // Formated dates
@@ -52,7 +52,7 @@ class WC_EBS_Cart extends WC_Cart {
  
         $booking_session = WC()->session->get( 'booking' );
 
-        if ( ! empty( $booking_session ) ) {
+        if ( isset( $booking_session[$product_id] ) && ! empty( $booking_session[$product_id] ) ) {
 
             $booking_price = $booking_session[$product_id]['new_price'];
             $booking_duration = $booking_session[$product_id]['duration'];

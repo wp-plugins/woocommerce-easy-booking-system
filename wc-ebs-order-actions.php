@@ -302,7 +302,12 @@ class WC_EBS_Order {
             $product_id = wc_get_order_item_meta( $item_id, '_product_id' );
             $wc_ebs_options = get_post_meta( $product_id, '_booking_option', true );
 
-            $order_booking_session = WC()->session->get( 'order_booking_' . $item_id );
+            if ( class_exists( 'WC_Session' ) ) {
+                $session_data = WC()->session->get_session_data();
+                $order_booking_session = ! empty( $session_data['order_booking_' . $item_id] ) ? WC()->session->get( 'order_booking_' . $item_id ) : '';
+            } else {
+                $order_booking_session = '';
+            }
 
             if ( isset( $wc_ebs_options ) && $wc_ebs_options == 'yes' ) {
 

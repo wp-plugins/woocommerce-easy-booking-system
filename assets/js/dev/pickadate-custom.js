@@ -1,6 +1,26 @@
 (function($) {
 	$(document).ready(function() {
 
+		productType = ajax_object.product_type;
+
+		if ( productType === 'variable' ) {
+
+			var $pickerWrap = $('.wceb_picker_wrap');
+				$pickerWrap.hide();
+
+			$('body').on('found_variation', '.variations_form', function(e, variation) {
+				if ( ! variation.is_purchasable || ! variation.is_in_stock || ! variation.variation_is_visible ) {
+					$pickerWrap.hide();
+				} else {
+					$pickerWrap.slideDown( 200 );
+				}
+			});
+
+			$('body').on('reset_image', '.variations_form', function(e, variation) {
+				$pickerWrap.hide();
+			});
+		}
+
 		firstDay = +ajax_object.first_date;
 
 		if ( firstDay == 0 )
@@ -24,9 +44,11 @@
 			set: function(startTime) {
 
 				if ( typeof startTime.clear != 'undefined' && startTime.clear == null ) {
-					pickerEnd.set('disable', false, { muted: true })
-							 .set('max', false, { muted: true })
-							 .set('highlight', new Date(), { muted: true });
+					pickerEnd.set({
+						disable: false,
+						max: false,
+						highlight: new Date()
+					}, { muted: true });
 
 					startPick = undefined;
 					ebs_clear_booking_session();
@@ -48,20 +70,32 @@
 					var min = minAndMax.min;
 					var max = minAndMax.max;
 				
-					pickerEnd.set('disable', false, { muted: true })
-							 .set('max', false, { muted: true })
-							 .set('highlight', min, { muted: true });
+					pickerEnd.set({
+						disable: false,
+						max: false,
+						highlight: min
+					}, { muted: true });
 
 					if ( ajax_object.calc_mode == 'days' ) {
-						pickerEnd.set('disable', [
-							{ from : true, to : [disabledDate.year, disabledDate.month, disabledDate.date - 1] },
-							{ from : [disabledDate.year, disabledDate.month, disabledDate.date], to : min }
-						], { muted: true }).set('max', max, { muted: true });
+
+						pickerEnd.set({
+							disable: [
+								{ from : true, to : [disabledDate.year, disabledDate.month, disabledDate.date - 1] },
+								{ from : [disabledDate.year, disabledDate.month, disabledDate.date], to : min }
+							],
+							max: max
+						}, { muted: true });
+
 					} else {
-						pickerEnd.set('disable', [
-							{ from : true, to : [disabledDate.year, disabledDate.month, disabledDate.date] },
-							{ from : [disabledDate.year, disabledDate.month, disabledDate.date], to : min }
-						], { muted: true }).set('max', max, { muted: true });
+
+						pickerEnd.set({
+							disable: [
+								{ from : true, to : [disabledDate.year, disabledDate.month, disabledDate.date] },
+								{ from : [disabledDate.year, disabledDate.month, disabledDate.date], to : min }
+							],
+							max: max
+						}, { muted: true });
+
 					}
 
 					if ( typeof startPick != 'undefined' && typeof endPick != 'undefined' )
@@ -78,9 +112,11 @@
 			set: function(endTime) {
 
 				if ( typeof endTime.clear != 'undefined' && endTime.clear == null ) {
-					pickerStart.set('disable', false, { muted: true })
-							   .set('max', false, { muted: true })
-							   .set('highlight', new Date(), { muted: true });
+					pickerStart.set({
+						disable: false,
+						max: false,
+						highlight: new Date()
+					}, { muted: true });
 
 					endPick = undefined;
 					ebs_clear_booking_session();
@@ -102,15 +138,25 @@
 					var min = minAndMax.min;
 					var max = minAndMax.max;
 
-					pickerStart.set('disable', false, { muted: true })
-							   .set('highlight', min, { muted: true });
+					pickerStart.set({
+						disable: false,
+						highlight: min
+					}, { muted: true });
 
 					if ( ajax_object.calc_mode == 'days' ) {
-						pickerStart.set('disable', [ { from : true, to : min } ], { muted: true })
-								   .set('max', max, { muted: true });
+
+						pickerStart.set({
+							disable: [ { from : true, to : min } ],
+							max: max
+						}, { muted: true });
+
 					} else {
-						pickerStart.set('disable', [ { from : true, to : min } ], { muted: true })
-								   .set('max', max, { muted: true });
+
+						pickerStart.set({
+							disable: [ { from : true, to : min } ],
+							max: max
+						}, { muted: true });
+
 					}
 
 					if ( typeof startPick != 'undefined' && typeof endPick != 'undefined' )
@@ -215,8 +261,13 @@
 
 		ebs_set_price = function(startPick, endPick, startDate, endDate, startDateDisplay, endDateDisplay) {
 
-			product_id = $('#variation_id').data('product_id');
-			variation_id = $('#variation_id').val();
+			if ( productType === 'variable' ) {
+				product_id = $('input[name=product_id]').val();
+			} else {
+				product_id = $('input[name=add-to-cart]').val();
+			}
+			
+			variation_id = $('.variations_form').find('input.variation_id').val();
 
 			var interval = parseInt( (endPick - startPick) / 86400000 );
 

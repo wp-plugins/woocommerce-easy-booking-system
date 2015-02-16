@@ -1,12 +1,12 @@
-==== WooCommerce Easy Booking System ====
-Contributors: @natashalavail, @amsul (For pickadate.js)
-Tags: woocommerce, booking, renting, products
-Requires at least: 3.0, WooCommerce 2.2.4
+==== WooCommerce Easy Booking ====
+Contributors: @_Ashanna, @amsul (For pickadate.js)
+Tags: woocommerce, booking, renting, products, book, rent, e-commerce
+Requires at least: 3.8, WooCommerce 2.3
 Tested up to: 4.1
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 
-WooCommerce Easy Booking System allows users to add an option to book or rent their products.
+WooCommerce Easy Booking allows users to add an option to book or rent their products.
 
 == Description ==
 
@@ -16,22 +16,42 @@ It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars an
 
 == Installation ==
 
-1. Install the "WooCommerce Easy Booking System" Plugin
+First, you need to install WooCommerce.
+
+1. Install the "WooCommerce Easy Booking" Plugin
 2. Activate the plugin
-3. Go to the WooCommerce Easy Booking System option page to set up the texts and colors you want to display
+3. Go to the WooCommerce Easy Booking tab to set up the plugin
 4. Go to the WooCommerce Product Page your want to allow for booking or renting
-5. Check the "Bookable" box next to the product type dropdown
+5. Check the "Bookable" checkbox next to the product type dropdown
 6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page.
 7. And you're done !
 
 == Changelog ==
+
+= 1.4.2 =
+
+* Fix - Issue with WooCommerce 2.3 and variable products.
+* Fix - Issue with WooCommerce 2.3 and products.
+* Fix - Issue with WooCommerce 2.3 on the order page.
+* Fix - Issue when calculating new price and taxes on the order page.
+* Fix - Removed minimum start date on the calendar on the product page.
+* Add - Another theme for the calendar.
+* Add - Hook when saving settings.
+* Add - Filter when calculating new price.
+* Add - Filter when calculating new price on the order page.
+* Add - Filter for the displayed price on the product page.
+* Add - Elements for the future Stock Management plugin.
+* Removed - Spanish translation.
+* Update - French translation.
+* Update - Calendar CSS.
+* Dev - Refactored code and plugin's structure.
 
 = 1.4.1 =
 
 * Fix - Fixed an error when updating orders.
 * Fix - Fixed an error when adding a normal product to cart.
 * Add - Spanish translation.
-* Add - Display base price for on day on the product page.
+* Add - Display base price for one day on the product page.
 * Add - Added an option to set the first available date.
 * Update - French translation.
 

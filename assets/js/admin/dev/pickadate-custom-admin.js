@@ -1,16 +1,14 @@
 (function($) {
 	$(document).ready(function() {
 
-		var item_picker = $('body').on('click', '.edit-order-item', function() {
+		var item_picker = $('#woocommerce-order-items').on('click', 'a.edit-order-item', function() {
 
-			var i_id = $(this).closest( 'tr' );
-			var a = i_id.find('.datepicker');
-			var id = i_id.find('.variation_id');
+			var datepickerInput = $(this).closest( 'tr' ).find('.datepicker');
+			var id = $(this).closest( 'tr' ).find('.variation_id');
 
-			if ( a.length && id.length ) {
+			if ( datepickerInput.length && id.length ) {
 
-				$input = a.pickadate({
-					min: true,
+				$input = datepickerInput.pickadate({
 		          	close: '',
 		          	formatSubmit: 'yyyy-mm-dd'
 				});

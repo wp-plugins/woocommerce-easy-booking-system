@@ -73,6 +73,11 @@ class WCEB_Admin_Assets {
             wp_enqueue_script( 'datepicker.language', plugins_url( 'assets/js/translations/' . $lang . '.js', WCEB_PLUGIN_FILE  ), array('jquery', 'pickadate', 'pickadate-custom-admin'), '1.0', true);
         }
 
+        // JS for admin notices
+        wp_enqueue_script( 'easy_booking_functions', plugins_url( 'assets/js/admin/wceb-admin-functions.min.js', WCEB_PLUGIN_FILE ), array('jquery'), '1.0', true);
+        // CSS for admin notices
+        wp_enqueue_style( 'easy_booking_notices', plugins_url(  'assets/css/admin/notices.min.css', WCEB_PLUGIN_FILE ) );
+
     }
 }
 

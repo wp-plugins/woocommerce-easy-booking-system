@@ -56,7 +56,7 @@ class WCEB_Assets {
 
             wp_enqueue_script( 'pickadate-custom', plugins_url( 'assets/js/pickadate-custom.min.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate'), '1.0', true);
             // wp_enqueue_script( 'pickadate-custom', plugins_url( 'assets/js/dev/pickadate-custom.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate'), '1.0', true);
-
+ 
             wp_enqueue_script( 'datepicker.language', plugins_url( 'assets/js/translations/' . $lang . '.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate', 'pickadate-custom'), '1.0', true);
 
             wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.min.css', WCEB_PLUGIN_FILE), true);

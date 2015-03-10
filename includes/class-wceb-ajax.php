@@ -18,6 +18,7 @@ class WCEB_Ajax {
         add_action( 'wp_ajax_nopriv_clear_booking_session', array( $this, 'easy_booking_clear_booking_session' ));
         add_action( 'wp_ajax_woocommerce_get_refreshed_fragments', array( $this, 'easy_booking_new_price_fragment' ));
         add_action( 'wp_ajax_nopriv_woocommerce_get_refreshed_fragments',  array( $this, 'easy_booking_new_price_fragment' ));
+        add_action( 'wp_ajax_easy_booking_hide_notice', array($this, 'easy_booking_hide_notice') );
 	}
 
     /**
@@ -63,7 +64,7 @@ class WCEB_Ajax {
         $price = $tax_display_mode == 'incl' ? $_product->get_price_including_tax() : $_product->get_price_excluding_tax(); // Product price (Regular or sale)
 
         $new_price = apply_filters( 'easy_booking_get_new_item_price', $price * $duration, $product, $_product, $duration ); // Price for x days
-        
+
         $array = array(
             'new_price' => $new_price,
             'duration' => $duration,
@@ -186,7 +187,7 @@ class WCEB_Ajax {
         $currency = apply_filters( 'easy_booking_currency', get_woocommerce_currency_symbol() ); // Currency
 
         // WooCommerce Currency Switcher compatibility
-        if ( class_exists('WOOCS') ){
+        if ( class_exists('WOOCS') ) {
             global $WOOCS;
 
             $currencies = $WOOCS->get_currencies();
@@ -211,6 +212,15 @@ class WCEB_Ajax {
             die();
         }
 
+    }
+
+    public function easy_booking_hide_notice() {
+        $notice = isset( $_POST['notice'] ) ? $_POST['notice'] : '';
+
+        if ( get_option( 'easy_booking_display_notice_' . $notice ) != 1 )
+            update_option( 'easy_booking_display_notice_' . $notice, 1 );
+
+        die();
     }
 }
 

@@ -3,7 +3,7 @@ Contributors: @_Ashanna, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products, book, rent, e-commerce
 Requires at least: 3.8, WooCommerce 2.3
 Tested up to: 4.1
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv2 or later
 
 WooCommerce Easy Booking allows users to add an option to book or rent their products.
@@ -13,6 +13,8 @@ WooCommerce Easy Booking allows users to add an option to book or rent their pro
 This plugins allows you to add an option to your product in order to book or rent it. It adds two fields to your product page : a start date and an end date and then calculates a new price based on a daily basis (E.g. 4$ per day).
 
 It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars and set the dates.
+
+For more features, check this add-on : http://herownsweetway.com/product/easy-booking-availability-check/ !
 
 == Installation ==
 
@@ -27,6 +29,10 @@ First, you need to install WooCommerce.
 7. And you're done !
 
 == Changelog ==
+
+= 1.4.4 =
+
+* Fix - Javascript error on the notices
 
 = 1.4.3 =
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Easy Booking\n"
-"POT-Creation-Date: 2015-02-15 18:44+0100\n"
-"PO-Revision-Date: 2015-02-15 18:44+0100\n"
+"POT-Creation-Date: 2015-03-09 16:43+0100\n"
+"PO-Revision-Date: 2015-03-09 16:46+0100\n"
 "Last-Translator: \n"
 "Language-Team: @_Ashanna\n"
 "MIME-Version: 1.0\n"
@@ -14,20 +14,20 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: woocommerce-easy-booking.php:68
+#: woocommerce-easy-booking.php:74
 #: includes/settings/class-wceb-settings.php:43
 msgid "Settings"
 msgstr "Paramètres"
 
-#: includes/class-wceb-ajax.php:130
+#: includes/class-wceb-ajax.php:131
 msgid "Please choose valid dates"
 msgstr "Veuillez choisir des dates valides"
 
-#: includes/class-wceb-ajax.php:133 includes/class-wceb-cart.php:49
+#: includes/class-wceb-ajax.php:134 includes/class-wceb-cart.php:49
 msgid "Please choose two dates"
 msgstr "Veuillez indiquer deux dates"
 
-#: includes/class-wceb-ajax.php:136
+#: includes/class-wceb-ajax.php:137
 msgid "Please select product option"
 msgstr "Veuillez choisir une option"
 
@@ -93,6 +93,18 @@ msgstr ""
 msgid "Minimum booking duration must be inferior to maximum booking duration"
 msgstr ""
 "La durée minimum de réservation doit être inférieure à la durée maximum"
+
+#: includes/admin/views/wceb-html-notice-ebac.php:15
+msgid ""
+"Easy Booking : Availability Check, the add-on to manage stocks and "
+"availabilities for WooCommerce Easy Booking is available !"
+msgstr ""
+"Easy Booking : Availability Check, l'add-on de gestion des stocks et des "
+"disponibilités pour WooCommerce Easy Booking est disponible !"
+
+#: includes/admin/views/wceb-html-notice-ebac.php:17
+msgid "Get it now !"
+msgstr "Découvrez-le !"
 
 #: includes/settings/class-wceb-settings.php:42
 msgid "Easy Booking"

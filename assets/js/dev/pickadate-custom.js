@@ -288,7 +288,7 @@
 
 			var this_page = window.location.toString();
 
-			$('form.cart').fadeTo('400', '0.6').block({message: null, overlayCSS: {background: 'transparent url(' + woocommerce_params.ajax_loader_url + ') no-repeat center', backgroundSize: '16px 16px', opacity: 0.6 } } );
+			$('form.cart').fadeTo('400', '0.6').block({message: null, overlayCSS: {background: 'transparent', backgroundSize: '16px 16px', opacity: 0.6 } } );
 
 			$.post(ajax_object.ajax_url, data, function( response ) {
 

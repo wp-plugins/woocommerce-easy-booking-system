@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Woocommerce Easy Booking
-Plugin URI: https://wordpress.org/plugins/woocommerce-easy-booking-system/
+Plugin URI: http://herownsweetway.com/product/woocommerce-easy-booking/
 Description: Allows users to rent or book products
-Version: 1.4.2
+Version: 1.4.3
 Author: @_Ashanna
 Author URI: http://ashanna.com
 Licence : GPLv2 or later
@@ -24,6 +24,8 @@ class Easy_booking {
         if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
             add_action( 'plugins_loaded', array( $this, 'easy_booking_init' ), 10 );
             add_filter( 'plugin_action_links_' . $plugin, array( $this, 'easy_booking_add_settings_link' ) );
+
+            add_action( 'admin_notices', array($this, 'easy_booking_add_notices') );
         }
 
     }
@@ -60,6 +62,11 @@ class Easy_booking {
         include_once( 'includes/class-wceb-product-view.php' );
         include_once( 'includes/class-wceb-assets.php' );
         include_once( 'includes/class-wceb-cart.php' );
+    }
+
+    public function easy_booking_add_notices() {
+        if ( get_option( 'easy_booking_display_notice_ebac-info' ) != 1 )
+            include( 'includes/admin/views/wceb-html-notice-ebac.php' );
     }
 
     // Add settings link

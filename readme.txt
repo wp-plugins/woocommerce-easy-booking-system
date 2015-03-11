@@ -3,7 +3,7 @@ Contributors: @_Ashanna, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products, book, rent, e-commerce
 Requires at least: 3.8, WooCommerce 2.3
 Tested up to: 4.1
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 
 WooCommerce Easy Booking allows users to add an option to book or rent their products.
@@ -27,6 +27,14 @@ First, you need to install WooCommerce.
 7. And you're done !
 
 == Changelog ==
+
+= 1.4.3 =
+
+Easy Booking : Availability Check, the add-on to manage stocks and availabilities for WooCommerce Easy Booking is available !
+Get it now on http://herownsweetway.com/product/easy-booking-availability-check/ !
+
+* Add - Admin notices styles.
+* Fix - Removed WooCommerce loading gif (which was not loaded, causing Javascript errors).
 
 = 1.4.2 =
 

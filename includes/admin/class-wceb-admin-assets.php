@@ -78,6 +78,12 @@ class WCEB_Admin_Assets {
         // CSS for admin notices
         wp_enqueue_style( 'easy_booking_notices', plugins_url(  'assets/css/admin/notices.min.css', WCEB_PLUGIN_FILE ) );
 
+        wp_localize_script( 'easy_booking_functions', 'ajax_object',
+            array( 
+                'ajax_url' => admin_url( 'admin-ajax.php' )
+            )
+        );
+
     }
 }
 

@@ -24,10 +24,13 @@ class WCEB_Order {
     *
     **/
     public function easy_booking_order_display_product_dates( $item_id, $item, $_product ) {
-        $product_id = intval( $item['product_id'] );
+        $product_id = $item['product_id'];
+        $variation_id = $item['variation_id'];
+
+        $id = empty( $variation_id ) ? $product_id : $variation_id;
 
         // Is product bookable ?
-        $is_bookable = get_post_meta( $product_id, '_booking_option', true );
+        $is_bookable = get_post_meta( $id, '_booking_option', true );
         $settings = get_option( 'easy_booking_settings' );
 
         $start_date_set = wc_get_order_item_meta( $item_id, '_ebs_start_format' );
@@ -46,14 +49,14 @@ class WCEB_Order {
             echo '<div class="view">';
             echo apply_filters( 'easy_booking_order_booked_meta',
                 '<p>
-                        <label for="start_date" style="font-weight: bold;">' . esc_html__( $start_date_text ) . ' : </label>
-                        <span class="wc_ebs_order_date">' . $start_date . '</span>
+                        <label for="start_date" style="font-weight: bold;">' . esc_html( $start_date_text ) . ' : </label>
+                        <span class="wc_ebs_order_date">' . esc_html( $start_date ) . '</span>
                     </p>
                     <p>
-                        <label for="end_date" style="font-weight: bold;">' . esc_html__( $end_date_text ) . ' : </label>
-                        <span class="wc_ebs_order_date">' . $end_date . '</span>
+                        <label for="end_date" style="font-weight: bold;">' . esc_html( $end_date_text ) . ' : </label>
+                        <span class="wc_ebs_order_date">' . esc_html( $end_date ) . '</span>
                     </p>',
-                $start_date_text, $end_date_text, $start_date, $end_date );
+                $start_date_text, $end_date_text, $start_date, $end_date, $item );
 
             echo '</div>';
 
@@ -68,12 +71,12 @@ class WCEB_Order {
             echo apply_filters( 'easy_booking_order_picker_form',
                 '<p>
                     <label for="start_date" style="font-weight: bold;">' . esc_html__( $start_date_text ) . ' : </label>
-                    <input type="hidden" class="variation_id" name="variation_id" data-item_id="' . $item_id . '" data-product_id="' . $product_id . '" value="">
-                    <input type="text" id="start_date" class="datepicker datepicker_start--' . $item_id . '" data-value="' . $u_start_date .'">
+                    <input type="hidden" class="variation_id" name="variation_id" data-item_id="' . absint( $item_id ) . '" data-product_id="' . absint( $product_id ) . '" value="">
+                    <input type="text" id="start_date" class="datepicker datepicker_start--' . absint( $item_id ) . '" data-value="' . esc_html( $u_start_date ) .'">
                 </p>
                 <p>
                     <label for="end_date" style="font-weight: bold;">' . esc_html__( $end_date_text ) . ' : </label>
-                    <input type="text" id="end_date" class="datepicker datepicker_end--' . $item_id . '" data-value="' . $u_end_date .'">
+                    <input type="text" id="end_date" class="datepicker datepicker_end--' . absint( $item_id ) . '" data-value="' . esc_html( $u_end_date ) .'">
                 </p>', $start_date_text, $end_date_text, $product_id, $item_id );
             echo '</div>';
 
@@ -123,20 +126,20 @@ class WCEB_Order {
         $start_diff = strtotime( $start );
         $end_diff = strtotime( $end );
 
-        $diff  = abs( $start_diff - $end_diff ) * 1000;
+        $diff  = absint( $start_diff - $end_diff ) * 1000;
 
         $days = $diff / 86400000;
 
-        if ( $days == 0 )
+        if ( $days === 0 )
             $days = 1;
 
         // If calculation mode is set to "Days", add one day
-        if ( $calc_mode == "days" && ( $start != $end ) ) {
-            $duration = $days + 1;
-        } elseif ( ( $calc_mode == "days" ) && ( $start == $end ) ) {
-            $duration = $days;
+        if ( $calc_mode === 'days' && ( $start != $end ) ) {
+            $duration = absint( $days + 1 );
+        } elseif ( ( $calc_mode === 'days' ) && ( $start === $end ) ) {
+            $duration = absint( $days );
         } else {
-            $duration = $days;
+            $duration = absint( $days );
         }
 
         if ( $product->is_taxable() ) {
@@ -211,11 +214,11 @@ class WCEB_Order {
 
         if ( ! empty( $product_taxes ) ) {
 
-            foreach ( $tax_subtotal as $tax_subtotal_id => $tax_subtotal_amnt )
-                $tax_subtotal[$tax_subtotal_id] = $tax_subtotal_amnt * $order_item['quantity']; // Multiply tax subtotal by item quantity
+            foreach ( $tax_subtotal as $tax_subtotal_id => $tax_subtotal_amount )
+                $tax_subtotal[$tax_subtotal_id] = $tax_subtotal_amount * $order_item['quantity']; // Multiply tax subtotal by item quantity
 
-            foreach ( $tax_total as $tax_total_id => $tax_total_amnt )
-                $tax_total[$tax_total_id] = $tax_total_amnt * $order_item['quantity']; // Multiply tax total by item quantity
+            foreach ( $tax_total as $tax_total_id => $tax_total_amount )
+                $tax_total[$tax_total_id] = $tax_total_amount * $order_item['quantity']; // Multiply tax total by item quantity
 
             // Format taxes
             $line_taxes          = array_map( 'wc_format_decimal', $tax_total );
@@ -239,9 +242,9 @@ class WCEB_Order {
     *
     **/
     public function easy_booking_order_update_product_dates() {
-        $item_id = isset( $_POST['item_id'] ) && intval( $_POST['item_id'] ) ? $_POST['item_id'] : ''; // Item ID
-        $order_id = isset( $_POST['order_id'] ) && intval( $_POST['order_id'] ) ? $_POST['order_id'] : ''; // Order ID
-        $item_qty = isset( $_POST['quantity'] ) && intval( $_POST['quantity'] ) ? $_POST['quantity'] : 0; // Item quantity
+        $item_id = isset( $_POST['item_id'] ) ? absint( $_POST['item_id'] ) : ''; // Item ID
+        $order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : ''; // Order ID
+        $item_qty = isset( $_POST['quantity'] ) ? absint( $_POST['quantity'] ) : 0; // Item quantity
 
         $item_tax_class = wc_get_order_item_meta( $item_id, '_tax_class' );
 
@@ -280,7 +283,7 @@ class WCEB_Order {
         );
 
         $item_prices = $this->easy_booking_get_booking_price( $product, $item_id, $start, $end, $order_item_data, $coupons );
-
+        
         $booking_data = array(
             'new_price' => $item_prices,
             'start_date' => $start_date,
@@ -320,9 +323,12 @@ class WCEB_Order {
             $end = wc_get_order_item_meta( $item_id, '_ebs_end_format' );
 
             $product_id = wc_get_order_item_meta( $item_id, '_product_id' );
+            $variation_id = wc_get_order_item_meta( $item_id, '_variation_id' );
+
+            $id = empty( $variation_id ) ? $product_id : $variation_id;
 
             // Is product bookable ?
-            $is_bookable = get_post_meta( $product_id, '_booking_option', true );
+            $is_bookable = get_post_meta( $id, '_booking_option', true );
 
             if ( ( ! empty( $start ) && ! empty( $end ) ) || ( isset( $is_bookable ) && $is_bookable === 'yes' ) ) {
 
@@ -334,7 +340,7 @@ class WCEB_Order {
                 }
 
                 $item_tax_class = $posted['order_item_tax_class'][$item_id];
-                $order_item['quantity'] = $posted['order_item_qty'][$item_id];
+                $order_item['quantity'] = wc_get_order_item_meta( $item_id, '_qty' );
 
                 if ( ! empty( $order_booking_session ) ) {
 

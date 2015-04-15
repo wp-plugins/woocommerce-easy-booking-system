@@ -1,6 +1,71 @@
-div.updated.easy-booking-notice {
+#wceb-settings-container:after {
+	content: '';
+	display: table;
+	clear: both;
+}
+
+#wceb-settings, #wceb-sidebar {
+	float: left;
+}
+
+#wceb-settings {
+	width: 75%;
+}
+
+#wceb-sidebar {
+	width: 25%;
+	margin-top: 58px;
+}
+
+@media screen and (max-width: 1400px) {
+	#wceb-settings {
+		width: 70%;
+	}
+
+	#wceb-sidebar {
+		width: 30%;
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	#wceb-settings {
+		width: 100%;
+	}
+
+	#wceb-sidebar {
+		width: 100%;
+		margin-top: 0;
+	}
+}
+
+@media screen and (max-width: 960px) {
+
+}
+
+div.easy-booking-notice {
 	padding: 2em;
-	background: url('../../img/hosc-pattern.jpg') repeat  left top;
+	background: url('../../img/hosc-pattern.jpg') repeat left top;	
+}
+
+#wceb-sidebar div.easy-booking-notice {
+	padding: 1em;
+}
+
+.easy-booking-notice__inner {
+	margin-bottom: 1em;
+	padding: 2em;
+	background: rgba(255, 255, 255, .6);
+}
+
+.easy-booking-notice__inner:last-of-type {
+	margin-bottom: 0;
+}
+
+.easy-booking-notice__inner h4 {
+	margin-top: 0;
+}
+
+div.updated.easy-booking-notice {
 	border-left: none;
 	box-shadow: none;
 	-webkit-box-shadow: none;
@@ -8,6 +73,20 @@ div.updated.easy-booking-notice {
 
 .easy-booking-notice h3 {
 	margin-top: 0;
+}
+
+.easy-booking-notice ul {
+	padding-left: 2em;
+	list-style-type: disc;
+}
+
+#wceb-sidebar .easy-booking-button {
+	margin-top: 1em;
+	text-align: center;
+}
+
+#wceb-sidebar .easy-booking-button--large {
+	width: 100%;
 }
 
 .button.easy-booking-button {

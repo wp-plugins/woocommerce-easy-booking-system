@@ -45,6 +45,11 @@ function adjustBrightness($hex, $steps) {
  * Note: the root picker element should __NOT__ be styled
  * more than what’s here. Style the `.picker__holder` instead.
  */
+
+input[readonly] {
+    cursor: pointer !important;
+}
+
 .picker {
   font-size: 16px;
   text-align: left;

@@ -22,20 +22,21 @@ class WCEB_Admin_Assets {
         $site_language = get_bloginfo( 'language' );
         $lang = str_replace( '-', '_', $site_language );
 
+        $admin_picker_script = '';
+
         if ( in_array( $screen->id, array( 'product' ) ) ) {
-            $is_bookable = get_post_meta($post->ID, '_booking_option', true);
+
+            $product = wc_get_product( $post->ID );
 
             wp_enqueue_script( 'ebs-admin-product', plugins_url('assets/js/admin/ebs-admin-product.min.js', WCEB_PLUGIN_FILE), array('jquery'), '1.0', true );
             // wp_enqueue_script( 'ebs-admin-product', plugins_url('assets/js/admin/dev/ebs-admin-product.js', WCEB_PLUGIN_FILE), array('jquery'), '1.0', true );
 
             wp_register_style( 'static-picker', plugins_url( 'assets/css/admin/static-picker.min.css', WCEB_PLUGIN_FILE ), true);
+            // wp_register_style( 'static-picker', plugins_url( 'assets/css/admin/dev/static-picker.css', WCEB_PLUGIN_FILE ), true);
             wp_enqueue_style( 'static-picker' );
 
-            wp_localize_script( 'ebs-admin-product', 'options',
-                array( 
-                    'booking_option' => $is_bookable
-                )
-            );
+            $admin_picker_script = 'ebs-admin-product';
+            
         }
 
         if ( in_array( $screen->id, array( 'shop_order' ) ) ) {
@@ -54,11 +55,13 @@ class WCEB_Admin_Assets {
 
             wp_localize_script( 'pickadate-custom-admin', 'order_ajax_info',
                 array( 
-                    'ajax_url' => admin_url( 'admin-ajax.php' ),
+                    'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
                     'order_id' => $post->ID,
-                    'calc_mode' => $calc_mode
+                    'calc_mode' => esc_html( $calc_mode )
                 )
             );
+
+            $admin_picker_script = 'pickadate-custom-admin';
 
         }
 
@@ -70,17 +73,27 @@ class WCEB_Admin_Assets {
             // wp_enqueue_script( 'picker.date', plugins_url( 'assets/js/dev/picker.date.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true);
             // wp_enqueue_script( 'legacy', plugins_url( 'assets/js/dev/legacy.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true);
 
-            wp_enqueue_script( 'datepicker.language', plugins_url( 'assets/js/translations/' . $lang . '.js', WCEB_PLUGIN_FILE  ), array('jquery', 'pickadate', 'pickadate-custom-admin'), '1.0', true);
+            if ( get_bloginfo( 'text_direction' ) === 'rtl' ) {
+                // Load Right to left CSS file
+                wp_register_style( 'rtl-style', plugins_url( 'assets/css/rtl.min.css', WCEB_PLUGIN_FILE ), true );
+                // wp_register_style( 'rtl-style', plugins_url('assets/css/dev/rtl.css', WCEB_PLUGIN_FILE), true);
+                wp_enqueue_style( 'rtl-style' );  
+            }
+
+            wp_enqueue_script( 'datepicker.language', plugins_url( 'assets/js/translations/' . $lang . '.js', WCEB_PLUGIN_FILE  ), array('jquery', 'pickadate', $admin_picker_script), '1.0', true);
         }
 
         // JS for admin notices
+        // wp_enqueue_script( 'easy_booking_functions', plugins_url( 'assets/js/admin/dev/wceb-admin-functions.js', WCEB_PLUGIN_FILE ), array('jquery'), '1.0', true);
         wp_enqueue_script( 'easy_booking_functions', plugins_url( 'assets/js/admin/wceb-admin-functions.min.js', WCEB_PLUGIN_FILE ), array('jquery'), '1.0', true);
+        
         // CSS for admin notices
         wp_enqueue_style( 'easy_booking_notices', plugins_url(  'assets/css/admin/notices.min.css', WCEB_PLUGIN_FILE ) );
+        // wp_enqueue_style( 'easy_booking_notices', plugins_url(  'assets/css/admin/dev/notices.css', WCEB_PLUGIN_FILE ) );
 
         wp_localize_script( 'easy_booking_functions', 'ajax_object',
             array( 
-                'ajax_url' => admin_url( 'admin-ajax.php' )
+                'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) )
             )
         );
 

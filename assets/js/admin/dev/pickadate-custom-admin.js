@@ -50,14 +50,12 @@
 							
 								pickerEnd.set('disable', false, { muted: true });
 
-								if ( order_ajax_info.calc_mode == 'days' ) {
-									pickerEnd.set('disable', [
-										{ from : true, to : [startPickerData.disabledDate.year, startPickerData.disabledDate.month, startPickerData.disabledDate.date - 1] }
-									], { muted: true });
+								if ( order_ajax_info.calc_mode === 'days' ) {
+									pickerEnd.set('min', [startPickerData.disabledDate.year, startPickerData.disabledDate.month, startPickerData.disabledDate.date],
+									{ muted: true });
 								} else {
-									pickerEnd.set('disable', [
-										{ from : true, to : [startPickerData.disabledDate.year, startPickerData.disabledDate.month, startPickerData.disabledDate.date] }
-									], { muted: true });
+									pickerEnd.set('min', [startPickerData.disabledDate.year, startPickerData.disabledDate.month, startPickerData.disabledDate.date + 1],
+									{ muted: true });
 								}
 
 							if ( setStart == '' )
@@ -96,11 +94,11 @@
 									endDateDisplay: pickerEnd.get('select', 'dd mmmm yyyy')
 								}
 
-								if ( order_ajax_info.calc_mode == 'days' ) {
+								if ( order_ajax_info.calc_mode === 'days' ) {
 									pickerStart.set('max', [endPickerData.disabledEndDate.year, endPickerData.disabledEndDate.month, endPickerData.disabledEndDate.date],
 									{ muted: true });
 								} else {
-									pickerStart.set('max', [endPickerData.disabledEndDate.year, endPickerData.disabledEndDate.month, endPickerData.disabledEndDate.date -1],
+									pickerStart.set('max', [endPickerData.disabledEndDate.year, endPickerData.disabledEndDate.month, endPickerData.disabledEndDate.date - 1],
 									{ muted: true });
 								}
 
@@ -131,8 +129,7 @@
 					ebs_set_price = function( item_id, startPickerData, endPickerData ) {
 
 						var qty_input = $('.quantity[name="order_item_qty[' + item_id + ']"]'),
-							qty = qty_input.val(),
-							o_qty = qty_input.attr( 'data-qty' );
+							qty = qty_input.val();
 
 						var data = {
 							action: 'ebs_sku_order_update_product_dates',
@@ -156,17 +153,29 @@
 
 							// Totals
 							var unit_total = accounting.unformat( totals.total, woocommerce_admin.mon_decimal_point );
-							var single_total = accounting.unformat( unit_total / o_qty, woocommerce_admin.mon_decimal_point );
+							var single_total = accounting.unformat( unit_total / qty, woocommerce_admin.mon_decimal_point );
+
 							line_total.val(
 								parseFloat( accounting.formatNumber( single_total * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
 									.toString()
 									.replace( '.', woocommerce_admin.mon_decimal_point )
 							);
 
+							line_total.attr('data-total', parseFloat( accounting.formatNumber( single_total * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
+									.toString()
+									.replace( '.', woocommerce_admin.mon_decimal_point )
+							);
+
 							var unit_subtotal = accounting.unformat( totals.subtotal, woocommerce_admin.mon_decimal_point );
-							var single_subtotal = accounting.unformat( unit_subtotal / o_qty, woocommerce_admin.mon_decimal_point );
+							var single_subtotal = accounting.unformat( unit_subtotal / qty, woocommerce_admin.mon_decimal_point );
+
 							line_subtotal.val(
 								parseFloat( accounting.formatNumber( single_subtotal * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
+									.toString()
+									.replace( '.', woocommerce_admin.mon_decimal_point )
+							);
+
+							line_subtotal.attr('data-subtotal', parseFloat( accounting.formatNumber( single_subtotal * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
 									.toString()
 									.replace( '.', woocommerce_admin.mon_decimal_point )
 							);
@@ -174,26 +183,40 @@
 							if ( totals.tax_total && typeof totals.tax_total != 'undefined' ) {
 								
 								var unit_total_tax = accounting.unformat( totals.tax_total[1], woocommerce_admin.mon_decimal_point );
-								var single_total_tax = accounting.unformat( unit_total_tax / o_qty, woocommerce_admin.mon_decimal_point );
+								var single_total_tax = accounting.unformat( unit_total_tax / qty, woocommerce_admin.mon_decimal_point );
 								if ( 0 < single_total_tax ) {
+
 									line_total_tax.val(
 										parseFloat( accounting.formatNumber( single_total_tax * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
 											.toString()
 											.replace( '.', woocommerce_admin.mon_decimal_point )
 									);
+
+									line_total_tax.attr('data-total_tax', parseFloat( accounting.formatNumber( single_total_tax * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
+											.toString()
+											.replace( '.', woocommerce_admin.mon_decimal_point )
+									);
+
 								}
 							}
 
 							if ( totals.tax_subtotal && typeof totals.tax_subtotal != 'undefined' ) {
 
 								var unit_subtotal_tax = accounting.unformat( totals.tax_subtotal[1], woocommerce_admin.mon_decimal_point );
-								var single_subtotal_tax = accounting.unformat( unit_subtotal_tax / o_qty, woocommerce_admin.mon_decimal_point );
+								var single_subtotal_tax = accounting.unformat( unit_subtotal_tax / qty, woocommerce_admin.mon_decimal_point );
 								if ( 0 < single_subtotal_tax ) {
+
 									line_subtotal_tax.val(
 										parseFloat( accounting.formatNumber( single_subtotal_tax * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
 											.toString()
 											.replace( '.', woocommerce_admin.mon_decimal_point )
 									);
+
+									line_subtotal_tax.attr('data-subtotal_tax', parseFloat( accounting.formatNumber( single_subtotal_tax * qty, woocommerce_admin_meta_boxes.rounding_precision, '' ) )
+											.toString()
+											.replace( '.', woocommerce_admin.mon_decimal_point )
+									);
+
 								}
 
 							}

@@ -2,8 +2,8 @@
 Contributors: @_Ashanna, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products, book, rent, e-commerce
 Requires at least: 3.8, WooCommerce 2.3
-Tested up to: 4.1
-Stable tag: 1.4.4
+Tested up to: 4.1.1
+Stable tag: 1.5
 License: GPLv2 or later
 
 WooCommerce Easy Booking allows users to add an option to book or rent their products.
@@ -14,7 +14,12 @@ This plugins allows you to add an option to your product in order to book or ren
 
 It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars and set the dates.
 
-For more features, check this add-on : http://herownsweetway.com/product/easy-booking-availability-check/ !
+See the plugin demo here : http://herownsweetway.com/product/woocommerce-easy-booking/
+
+For more features, check these add-ons :
+
+* Easy Booking : Availability Check : http://herownsweetway.com/product/easy-booking-availability-check/
+* Easy Booking : Duration Discounts : http://herownsweetway.com/product/easy-booking-duration-discounts/
 
 == Installation ==
 
@@ -25,10 +30,28 @@ First, you need to install WooCommerce.
 3. Go to the WooCommerce Easy Booking tab to set up the plugin
 4. Go to the WooCommerce Product Page your want to allow for booking or renting
 5. Check the "Bookable" checkbox next to the product type dropdown
-6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page.
+6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page (or the variations tab for variable products).
 7. And you're done !
 
 == Changelog ==
+
+= 1.5 =
+
+This update contains major changes for variable products. Backwards compatibility should be ok, but still check your variations after updating.
+
+* Add - Variations are now handled individually, instead of inheriting from the parent product.
+* Add - Multisite compatibility.
+* Add - Right to left CSS, for right to left languages.
+* Fix - Wrong price calculation when modifying an order.
+* Fix - Security changes.
+* Fix - Picker inputs pointer cursor.
+* Fix - Added en.js file.
+* Fix - Wrong $wpdb calls.
+* Fix - Display product price on the right format.
+* Tweak - Regenerate CSS only after saving plugin settings.
+* Tweak - Improved Inputs CSS.
+* Localization - Added Dutch translation.
+* Localization - Update French translation.
 
 = 1.4.4 =
 

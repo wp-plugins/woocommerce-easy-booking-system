@@ -13,8 +13,8 @@ class WCEB_Cart {
         // get plugin options values
         $this->options = get_option('easy_booking_settings');
         
-        add_filter('woocommerce_add_to_cart_validation', array($this, 'easy_booking_check_dates_before_add_to_cart'), 20, 2);
-        add_filter('woocommerce_add_cart_item_data', array( $this, 'easy_booking_add_cart_item_data'), 10, 2);
+        add_filter('woocommerce_add_to_cart_validation', array($this, 'easy_booking_check_dates_before_add_to_cart'), 20, 4);
+        add_filter('woocommerce_add_cart_item_data', array( $this, 'easy_booking_add_cart_item_data'), 10, 3);
         add_filter('woocommerce_get_cart_item_from_session', array( $this, 'easy_booking_get_cart_item_from_session'), 10, 2);
         add_filter('woocommerce_get_item_data', array( $this, 'easy_booking_get_item_data'), 10, 2);
         add_filter('woocommerce_add_cart_item', array( $this, 'easy_booking_add_cart_item'), 10, 1);
@@ -29,17 +29,18 @@ class WCEB_Cart {
     * @return bool $passed
     *
     **/
-    public function easy_booking_check_dates_before_add_to_cart( $passed = true, $product_id ) {
+    public function easy_booking_check_dates_before_add_to_cart( $passed = true, $product_id, $quantity, $variation_id = '' ) {
         $booking_session = WC()->session->get( 'booking' );
-        $is_bookable = get_post_meta($product_id, '_booking_option', true);
+        $id = empty( $variation_id ) ? $product_id : $variation_id;
+        $is_bookable = get_post_meta( $id, '_booking_option', true );
 
         // If product is bookable
         if ( isset( $is_bookable ) && $is_bookable === 'yes' ) {
 
-            if ( isset( $booking_session[$product_id] ) && ! empty( $booking_session[$product_id] ) ) {
+            if ( isset( $booking_session[$id] ) && ! empty( $booking_session[$id] ) ) {
 
-                $start_date = $booking_session[$product_id]['start_date']; // Formated dates
-                $end_date = $booking_session[$product_id]['end_date']; // Formated dates
+                $start_date = $booking_session[$id]['start_date']; // Formated dates
+                $end_date = $booking_session[$id]['end_date']; // Formated dates
             
                 if ( isset( $start_date ) && isset( $end_date ) ) {
                     $passed = true;
@@ -64,18 +65,19 @@ class WCEB_Cart {
     * @return array $cart_item_meta
     *
     **/
-    function easy_booking_add_cart_item_data( $cart_item_meta, $product_id ) {
+    function easy_booking_add_cart_item_data( $cart_item_meta, $product_id, $variation_id ) {
         // Get session
         $booking_session = WC()->session->get( 'booking' );
+        $id = empty( $variation_id ) ? $product_id : $variation_id;
 
-        if ( isset( $booking_session[$product_id] ) && ! empty( $booking_session[$product_id] ) ) {
+        if ( isset( $booking_session[$id] ) && ! empty( $booking_session[$id] ) ) {
 
-            $cart_item_meta['_booking_price'] = $booking_session[$product_id]['new_price'];
-            $cart_item_meta['_booking_duration'] = $booking_session[$product_id]['duration'];
-            $cart_item_meta['_start_date'] = $booking_session[$product_id]['start_date']; // Formatted dates
-            $cart_item_meta['_end_date'] = $booking_session[$product_id]['end_date']; // Formatted dates
-            $cart_item_meta['_ebs_start'] = $booking_session[$product_id]['start'];
-            $cart_item_meta['_ebs_end'] = $booking_session[$product_id]['end'];
+            $cart_item_meta['_booking_price'] = $booking_session[$id]['new_price'];
+            $cart_item_meta['_booking_duration'] = $booking_session[$id]['duration'];
+            $cart_item_meta['_start_date'] = $booking_session[$id]['start_date']; // Formatted dates
+            $cart_item_meta['_end_date'] = $booking_session[$id]['end_date']; // Formatted dates
+            $cart_item_meta['_ebs_start'] = $booking_session[$id]['start'];
+            $cart_item_meta['_ebs_end'] = $booking_session[$id]['end'];
 
             // Reset session
             WC()->session->set( 'booking', '' );

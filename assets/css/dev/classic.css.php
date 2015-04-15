@@ -48,6 +48,10 @@ function classicAdjustBrightness($hex, $steps) {
   position: relative;
 }
 
+input[readonly] {
+    cursor: pointer !important;
+}
+
 .picker {
   font-size: 16px;
   text-align: left;

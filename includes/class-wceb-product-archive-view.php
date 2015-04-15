@@ -21,7 +21,7 @@ class WCEB_Product_Archive_View {
     * @return str $content - Custom or current text
     *
     **/
-    public function easy_booking_custom_loop_add_to_cart($content, $product) {
+    public function easy_booking_custom_loop_add_to_cart( $content, $product ) {
         global $post, $product;
 
         $is_bookable = get_post_meta($post->ID, '_booking_option', true);

@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Easy Booking\n"
 "POT-Creation-Date: 2015-03-09 16:43+0100\n"
-"PO-Revision-Date: 2015-04-13 16:01+0100\n"
+"PO-Revision-Date: 2015-04-10 22:07+0100\n"
 "Last-Translator: \n"
-"Language-Team: @_Ashanna\n"
+"Language-Team: Dennis\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,94 +17,94 @@ msgstr ""
 #: woocommerce-easy-booking.php:74
 #: includes/settings/class-wceb-settings.php:43
 msgid "Settings"
-msgstr "Paramètres"
+msgstr "Instellingen"
 
 #: includes/class-wceb-ajax.php:131
 msgid "Please choose valid dates"
-msgstr "Veuillez choisir des dates valides"
+msgstr "Kies geldige data"
 
 #: includes/class-wceb-ajax.php:134 includes/class-wceb-cart.php:49
 msgid "Please choose two dates"
-msgstr "Veuillez indiquer deux dates"
+msgstr "Kies twee geldige data"
 
 #: includes/class-wceb-ajax.php:137
 msgid "Please select product option"
-msgstr "Veuillez choisir une option"
+msgstr "Selecteer een product optie"
 
 #: includes/class-wceb-cart.php:132 includes/class-wceb-checkout.php:30
 #: includes/class-wceb-checkout.php:60
 #: includes/settings/class-wceb-settings.php:19
 msgid "Start"
-msgstr "Début"
+msgstr "Begin datum"
 
 #: includes/class-wceb-cart.php:133 includes/class-wceb-checkout.php:31
 #: includes/class-wceb-checkout.php:61
 #: includes/settings/class-wceb-settings.php:20
 msgid "End"
-msgstr "Fin"
+msgstr "Eind datum"
 
 #: includes/class-wceb-product-archive-view.php:32
 msgid "Select dates"
-msgstr "Choix des dates"
+msgstr "Kies data"
 
 #: includes/class-wceb-product-view.php:84
 msgid " / day"
-msgstr " / jour"
+msgstr " / dag"
 
 #: includes/admin/class-wceb-product-settings.php:31
 msgid "Bookable"
-msgstr "À louer / réserver"
+msgstr "Reserveerbaar"
 
 #: includes/admin/class-wceb-product-settings.php:32
 msgid "Bookable products can be rent or booked on a daily schedule"
 msgstr ""
-"Les produits peuvent être loués ou réservés selon un calendrier quotidien"
+"Reserveerbare producten kunnen gehuurd of geboekt worden op dagelijkse basis"
 
 #: includes/admin/class-wceb-product-settings.php:50
 msgid "Bookings"
-msgstr "Résevations"
+msgstr "Reserveringen"
 
 #: includes/admin/class-wceb-product-settings.php:74
 msgid "Minimum booking duration"
-msgstr "Durée minimum de réservation"
+msgstr "Minimale boekingsduur"
 
 #: includes/admin/class-wceb-product-settings.php:76
 #: includes/admin/class-wceb-product-settings.php:88
 msgid "Leave zero or empty to set no duration limit"
-msgstr "Laissez 0 ou vide pour ne pas limiter la durée de réservation"
+msgstr "Laat 0 staan of leeg om geen duur te limit in te stellen"
 
 #: includes/admin/class-wceb-product-settings.php:86
 msgid "Maximum booking duration"
-msgstr "Durée maximum de réservation"
+msgstr "Maximale boekingsduur"
 
 #: includes/admin/class-wceb-product-settings.php:98
 msgid "First available date"
-msgstr "Première date disponible"
+msgstr "Eerst beschikbare data"
 
 #: includes/admin/class-wceb-product-settings.php:100
 msgid ""
 "First available date, relative to today. I.e. : today + 5 days. Leave zero "
 "or empty for today."
 msgstr ""
-"Première date disponible, par rapport à aujourd'hui. I.e. : aujourd'hui + 5 "
-"jours. Laissez 0 ou vide pour aujourd'hui."
+"Eerst beschikbare datum, gebaseerd op vandaag bijv.: vandaag + 5 of laat het "
+"leeg voor vandaag."
 
 #: includes/admin/class-wceb-product-settings.php:138
 msgid "Minimum booking duration must be inferior to maximum booking duration"
 msgstr ""
-"La durée minimum de réservation doit être inférieure à la durée maximum"
+"De minimale boekingsduur moet kleiner zijn dan dan maximale boekingsduur"
 
 #: includes/admin/views/wceb-html-notice-ebac.php:15
 msgid ""
 "Easy Booking : Availability Check, the add-on to manage stocks and "
 "availabilities for WooCommerce Easy Booking is available !"
 msgstr ""
-"Easy Booking : Availability Check, l'add-on de gestion des stocks et des "
-"disponibilités pour WooCommerce Easy Booking est disponible !"
+"Easy Booking : Availability Check, de add-on voor voorraad beheer en "
+"beschikbaarheid voor WooCommerce Easy Booking is nu beschikbaar !"
 
 #: includes/admin/views/wceb-html-notice-ebac.php:17
 msgid "Get it now !"
-msgstr "Découvrez-le !"
+msgstr "Bestel nu !"
 
 #: includes/settings/class-wceb-settings.php:42
 msgid "Easy Booking"
@@ -112,109 +112,108 @@ msgstr "Easy Booking"
 
 #: includes/settings/class-wceb-settings.php:90
 msgid "General settings"
-msgstr "Paramètres généraux"
+msgstr "Standaard instellingen"
 
 #: includes/settings/class-wceb-settings.php:97
 msgid "Calculation mode"
-msgstr "Mode de calcul"
+msgstr "Rekenmodus"
 
 #: includes/settings/class-wceb-settings.php:105
 msgid "Text settings"
-msgstr "Paramètres des textes"
+msgstr "Tekst instellingen"
 
 #: includes/settings/class-wceb-settings.php:112
 msgid "Information text"
-msgstr "Texte d'information"
+msgstr "Informatie tekst"
 
 #: includes/settings/class-wceb-settings.php:120
 msgid "First date title"
-msgstr "Titre de la première date"
+msgstr "Eerste datum titel"
 
 #: includes/settings/class-wceb-settings.php:128
 msgid "Second date title"
-msgstr "Titre de la seconde date"
+msgstr "Tweede datum titel"
 
 #: includes/settings/class-wceb-settings.php:136
 msgid "Appearance"
-msgstr "Apparence"
+msgstr "Beschikbaar"
 
 #: includes/settings/class-wceb-settings.php:143
 msgid "Calendar theme"
-msgstr "Thème du calendrier"
+msgstr "Kalenderschema"
 
 #: includes/settings/class-wceb-settings.php:151
 msgid "Background color"
-msgstr "Couleur de fond"
+msgstr "Achtergrond kleur"
 
 #: includes/settings/class-wceb-settings.php:159
 msgid "Main color"
-msgstr "Couleur principale"
+msgstr "Hoofd kleur"
 
 #: includes/settings/class-wceb-settings.php:167
 msgid "Text color"
-msgstr "Couleur du texte"
+msgstr "Tekst kleur"
 
 #: includes/settings/class-wceb-settings.php:184
 msgid "WooCommerce Easy Booking settings"
-msgstr "Options de WooCommerce Easy Booking"
+msgstr "WooCommerce Easy Booking instellingen"
 
 #: includes/settings/class-wceb-settings.php:209
 msgid "Days"
-msgstr "Jours"
+msgstr "Dagen"
 
 #: includes/settings/class-wceb-settings.php:210
 msgid "Nights"
-msgstr "Nuits"
+msgstr "Nachten"
 
 #: includes/settings/class-wceb-settings.php:212
 msgid ""
 "Choose whether to calculate the final price depending on number of days or "
 "number of nights (i.e. 5 days = 4 nights)."
 msgstr ""
-"Choisissez de calculer le prix final selon le nombre de jours ou le nombre "
-"de nuits (i.e. 5 jours = 4 nuits)."
+"Kies of de calculatie van de totaal prijs afhankelijk is van aantal dagen of "
+"nachten (bijv. 5 dagen = 4 nachten)."
 
 #: includes/settings/class-wceb-settings.php:216
 msgid ""
 "Make this plugin yours by choosing the different texts you want to display !"
 msgstr ""
-"Personnalisez le plugin en choisissant les différents textes que vous "
-"souhaitez afficher !"
+"Maak deze plugin persoonlijk door het aanpassen van verschillende scherm "
+"teksten !"
 
 #: includes/settings/class-wceb-settings.php:221
 msgid ""
 "Displays an information text before date inputs. Leave empty if you don't "
 "want the information text."
 msgstr ""
-"Affiche un texte d'information avant le formulaire de réservation. Laissez "
-"vide si vous ne souhaitez pas afficher de texte d'information."
+"Laat een informatie tekst zien voor data invoer. Laat hem leeg als je geen "
+"informatie tekst wilt laten zien."
 
 #: includes/settings/class-wceb-settings.php:226
 msgid "Text displayed before the first date"
-msgstr "Texte à afficher avant la première date"
+msgstr "Scherm tekst voor de eerste data"
 
 #: includes/settings/class-wceb-settings.php:231
 msgid "Text displayed before the second date"
-msgstr "Texte à afficher avant la seconde date"
+msgstr "Scherm tekst voor de tweede data"
 
 #: includes/settings/class-wceb-settings.php:235
 msgid "Customize the calendar so it looks great with your theme !"
-msgstr ""
-"Customisez le calendrier afin qu'il se marie à merveille avec votre thème !"
+msgstr "Bewerk de kalender zo dat hij er mooi uit ziet in je theme !"
 
 #: includes/settings/class-wceb-settings.php:242
 msgid "Default"
-msgstr "Défaut"
+msgstr "Standaard"
 
 #: includes/settings/class-wceb-settings.php:243
 msgid "Classic"
-msgstr "Classique"
+msgstr "Klassiek"
 
 #~ msgid "Color settings"
-#~ msgstr "Paramètres des couleurs"
+#~ msgstr "Kleur instellingen"
 
 #~ msgid "Display information text"
-#~ msgstr "Afficher un texte d'informations"
+#~ msgstr "Scherm informatie tekst"
 
 #~ msgid "Choose to display or not an information text before date inputs"
-#~ msgstr "Afficher ou non un texte d'informations avant le choix des dates"
+#~ msgstr "Kies of je informatie voor de data velden wilt laten zien"

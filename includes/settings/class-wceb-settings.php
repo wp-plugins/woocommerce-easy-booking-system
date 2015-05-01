@@ -30,17 +30,17 @@ class WCEB_Settings {
 
 		if ( is_admin() ) {
 
-			add_action( 'admin_menu', array($this, 'easy_booking_add_option_page'), 10 );
+			add_action( 'admin_menu', array($this, 'easy_booking_add_option_pages'), 10 );
 			add_action( 'admin_init', array($this, 'easy_booking_admin_init') );
 
 		}
 
 	}
 
-	public function easy_booking_add_option_page() {
+	public function easy_booking_add_option_pages() {
 		$hook = add_menu_page( __('Easy Booking', 'easy_booking'), __('Easy Booking', 'easy_booking'), 'manage_options', 'easy-booking', '', 'dashicons-calendar-alt', 58 );
 		$option_page = add_submenu_page( 'easy-booking', __('Settings', 'easy_booking'), __('Settings', 'easy_booking'), 'manage_options', 'easy-booking', array($this, 'easy_booking_option_page') );
-
+		
 		add_action( 'load-'. $hook, array($this, 'easy_booking_settings_save') );
 		add_action( 'admin_print_scripts-'. $option_page, array($this, 'easy_booking_load_admin_scripts') );
 	}
@@ -48,7 +48,8 @@ class WCEB_Settings {
 	public function easy_booking_settings_save() {
 
 	  	if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) {
-	  		$this->easy_booking_generate_css();
+	  		$data = get_option('easy_booking_settings');
+	  		$this->easy_booking_generate_css( $data );
 	   	}
 
 	}
@@ -59,19 +60,19 @@ class WCEB_Settings {
 	}
 
 	// Generate static css file
-	public function easy_booking_generate_css() {
+	public function easy_booking_generate_css( $data ) {
 		$plugin_dir = plugin_dir_path( WCEB_PLUGIN_FILE ); // Shorten code, save 1 call
 
         $php_files = array(
-        	'default' => realpath( $plugin_dir . 'assets/css/dev/default.min.css.php' ),
-        	'classic' => realpath( $plugin_dir . 'assets/css/dev/classic.min.css.php' )
+        	'default' => realpath( $plugin_dir . 'assets/css/dev/default.css.php' ),
+        	'classic' => realpath( $plugin_dir . 'assets/css/dev/classic.css.php' )
         );
 
         if ( function_exists( 'is_multisite' ) && is_multisite() ) {
 			$blog_id = get_current_blog_id();
 
-			$default = str_replace('/', '\\', $plugin_dir . 'assets/css/default.' . $blog_id . '.min.css' ); // Replace backslashes with forwardslashes
-			$classic = str_replace('/', '\\', $plugin_dir . 'assets/css/classic.' . $blog_id . '.min.css' ); // Replace backslashes with forwardslashes
+			$default = str_replace('/', '\\', $plugin_dir . 'assets/css/dev/default.' . $blog_id . '.css' ); // Replace backslashes with forwardslashes
+			$classic = str_replace('/', '\\', $plugin_dir . 'assets/css/dev/classic.' . $blog_id . '.css' ); // Replace backslashes with forwardslashes
 
 			$css_files = array(
 	        	'default' => $default,
@@ -80,8 +81,8 @@ class WCEB_Settings {
 
 		} else {
 			$css_files = array(
-	        	'default' => realpath( $plugin_dir . 'assets/css/default.min.css' ),
-	        	'classic' => realpath( $plugin_dir . 'assets/css/classic.min.css' )
+	        	'default' => realpath( $plugin_dir . 'assets/css/dev/default.css' ),
+	        	'classic' => realpath( $plugin_dir . 'assets/css/dev/classic.css' )
 	        );
 		}
 

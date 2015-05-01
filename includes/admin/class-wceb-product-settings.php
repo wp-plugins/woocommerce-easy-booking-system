@@ -54,12 +54,13 @@ class WCEB_Product_Settings {
         // Backwards compatibility
         $meta_data = array( '_booking_option', '_booking_min', '_booking_max', '_first_available_date' );
         if ( $meta_data ) foreach ( $meta_data as $meta ) {
-            $meta_value = get_post_meta( $post->ID, $meta, true );
+            $product_id = $variation->post_parent;
+            $meta_value = get_post_meta( $product_id, $meta, true );
 
             if ( ! empty( $meta_value ) ) {
 
                 update_post_meta( $variation->ID, $meta, $meta_value );
-                delete_post_meta( $post->ID, $meta );
+                delete_post_meta( $product_id, $meta );
 
             }
         }

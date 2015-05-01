@@ -40,6 +40,8 @@ class WCEB_Ajax {
         $start = isset( $_POST['start_format'] ) ? sanitize_text_field( $_POST['start_format'] ) : ''; // Booking start date 'yyyy-mm-dd'
         $end = isset( $_POST['end_format'] ) ? sanitize_text_field( $_POST['end_format'] ) : ''; // Booking end date 'yyyy-mm-dd'
         
+        $additional_cost = isset( $_POST['additional_cost'] ) ? absint( $_POST['additional_cost'] ) : 0;
+        
         // Get booking duration
         $start_diff = strtotime( $start );
         $end_diff = strtotime( $end );
@@ -64,16 +66,15 @@ class WCEB_Ajax {
 
         $product = wc_get_product( $product_id ); // Product object
         $_product = wc_get_product( $id ); // Product or variation object
-
-        $tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
         
         // If product is variable, get variation price
         if ( $product->is_type( 'variable' ) && empty( $variation_id ) ) // If no variation was selected
             $error_code = 3;
 
+        $tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
         $price = $tax_display_mode === 'incl' ? $_product->get_price_including_tax() : $_product->get_price_excluding_tax(); // Product price (Regular or sale)
 
-        $booking_price = wc_format_decimal( $price * $duration );
+        $booking_price = wc_format_decimal( ( $price + $additional_cost ) * $duration );
         $new_price = apply_filters( 'easy_booking_get_new_item_price', $booking_price, $product, $_product, $duration ); // Price for x days
         
         $array = array(
@@ -124,7 +125,15 @@ class WCEB_Ajax {
     *
     **/
     public function easy_booking_clear_booking_session() {
-        WC()->session->set( 'booking', '' );
+        $session = WC()->session->get( 'booking' );
+
+        if ( ! empty( $session ) ) {
+            WC()->session->set( 'booking', '' );
+        }
+
+        $session_set = false;
+
+        die($session_set);
     }
 
     /**
@@ -190,6 +199,8 @@ class WCEB_Ajax {
     public function easy_booking_new_price_fragment() {
 
         header( 'Content-Type: application/json; charset=utf-8' );
+
+        $session = false;
         
         $product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : '';
         $variation_id = isset( $_POST['variation_id'] ) ? absint( $_POST['variation_id'] ) : '';
@@ -199,25 +210,19 @@ class WCEB_Ajax {
         $booking_session = WC()->session->get( 'booking' );
         $new_price = $booking_session[$id]['new_price']; // New booking price
         $currency = apply_filters( 'easy_booking_currency', get_woocommerce_currency_symbol() ); // Currency
-
-        // WooCommerce Currency Switcher compatibility
-        if ( class_exists('WOOCS') ) {
-            global $WOOCS;
-
-            $currencies = $WOOCS->get_currencies();
-            $new_price = $new_price * $currencies[$WOOCS->current_currency]['rate'];
-            $new_price = number_format($new_price, 2, $WOOCS->decimal_sep, $WOOCS->thousands_sep);
-            $currency = $currencies[$WOOCS->current_currency]['symbol'];
-        }
-
+        $args = apply_filters( 'easy_booking_new_price_args', array() );
+        
         if ( ! empty( $booking_session[$id]['duration'] ) ) {
+
+            $session = true;
 
             ob_start();
             $fragments = ob_get_clean();
 
                 $data = array(
                     'fragments' => apply_filters( 'easy_booking_fragments', array(
-                        'span.price' => '<span class="price">' . wc_price( $new_price ) . '</span>'
+                        'span.price' => '<span class="price">' . wc_price( $new_price, $args ) . '</span>',
+                        'session' => $session
                         )
                     )
                 );

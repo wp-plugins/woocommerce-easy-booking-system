@@ -57,6 +57,10 @@ input[readonly] {
   color: <?php echo $text_color; ?>;
   position: absolute;
   z-index: 10000;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .picker, .picker > * {
@@ -93,19 +97,22 @@ input[readonly] {
  */
 .picker__holder,
 .picker__frame {
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  top: 100%;
+  -webkit-transform: translateY(100%);
+      -ms-transform: translateY(100%);
+          transform: translateY(100%);
 }
 /**
  * The holder should overlay the entire screen.
  */
 .picker__holder {
   position: fixed;
-  -webkit-transition: background 0.15s ease-out, top 0s 0.15s;
-  -moz-transition: background 0.15s ease-out, top 0s 0.15s;
-  transition: background 0.15s ease-out, top 0s 0.15s;
+  transition: background 0.15s ease-out, -webkit-transform 0s 0.15s;
+  transition: background 0.15s ease-out, transform 0s 0.15s;
+  -webkit-backface-visibility: hidden;
 }
 /**
  * The frame that bounds the box contents of the picker.
@@ -120,8 +127,6 @@ input[readonly] {
   filter: alpha(opacity=0);
   -moz-opacity: 0;
   opacity: 0;
-  -webkit-transition: all 0.15s ease-out;
-  -moz-transition: all 0.15s ease-out;
   transition: all 0.15s ease-out;
 }
 @media (min-height: 33.875em) {
@@ -170,11 +175,7 @@ input[readonly] {
     border: 1px solid <?php echo adjustBrightness($background_color, -150); ?>;
     border-top-color: <?php echo adjustBrightness($background_color, -125); ?>;
     border-bottom-width: 0;
-    -webkit-border-radius: 5px 5px 0 0;
-    -moz-border-radius: 5px 5px 0 0;
     border-radius: 5px 5px 0 0;
-    -webkit-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
-    -moz-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
     box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
   }
 }
@@ -182,8 +183,6 @@ input[readonly] {
   .picker__box {
     font-size: 1.5em;
     border-bottom-width: 1px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
     border-radius: 5px;
   }
 }
@@ -191,17 +190,19 @@ input[readonly] {
  * When the picker opens...
  */
 .picker--opened .picker__holder {
-  top: 0;
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
   background: transparent;
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#1E000000,endColorstr=#1E000000)";
   zoom: 1;
   background: rgba(0, 0, 0, 0.32);
-  -webkit-transition: background 0.15s ease-out;
-  -moz-transition: background 0.15s ease-out;
   transition: background 0.15s ease-out;
 }
 .picker--opened .picker__frame {
-  top: 0;
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
   filter: alpha(opacity=100);
   -moz-opacity: 1;
@@ -254,13 +255,17 @@ input[readonly] {
  */
 .picker__select--month,
 .picker__select--year {
-  font-size: .8em;
   border: 1px solid <?php echo adjustBrightness($background_color, -50); ?>;
-  height: 2.5em;
-  padding: .5em .25em;
+  height: 2em;
+  padding: .5em;
   margin-left: .25em;
   margin-right: .25em;
-  margin-top: -0.5em;
+}
+@media (min-width: 24.5em) {
+  .picker__select--month,
+  .picker__select--year {
+    margin-top: -0.5em;
+  }
 }
 .picker__select--month {
   width: 35%;
@@ -278,17 +283,35 @@ input[readonly] {
 .picker__nav--prev,
 .picker__nav--next {
   position: absolute;
-  top: -0.33em;
-  padding: .5em 1.33em;
+  padding: .5em 1.25em;
   width: 1em;
+  height: 1em;
+  box-sizing: content-box;
+  top: -0.25em;
+}
+@media (min-width: 24.5em) {
+  .picker__nav--prev,
+  .picker__nav--next {
+    top: -0.33em;
+  }
 }
 .picker__nav--prev {
   left: -1em;
-  padding-right: 1.5em;
+  padding-right: 1.25em;
+}
+@media (min-width: 24.5em) {
+  .picker__nav--prev {
+    padding-right: 1.5em;
+  }
 }
 .picker__nav--next {
   right: -1em;
-  padding-left: 1.5em;
+  padding-left: 1.25em;
+}
+@media (min-width: 24.5em) {
+  .picker__nav--next {
+    padding-left: 1.5em;
+  }
 }
 .picker__nav--prev:before,
 .picker__nav--next:before {
@@ -324,7 +347,6 @@ input[readonly] {
  * The calendar table of dates
  */
 .picker__table {
-  background: none;
   text-align: center;
   border-collapse: collapse;
   border-spacing: 0;
@@ -334,15 +356,13 @@ input[readonly] {
   margin-top: .75em;
   margin-bottom: .5em;
 }
-
-.picker__table td, .picker__table th {
-  border: none;
-}
-
 @media (min-height: 33.875em) {
   .picker__table {
     margin-bottom: .75em;
   }
+}
+.picker__table td, .picker__table th {
+  border: none;
 }
 .picker__table td {
   margin: 0;
@@ -389,13 +409,6 @@ input[readonly] {
   border-top: 0.5em solid <?php echo adjustBrightness($main_color, -50); ?>;
   border-left: .5em solid transparent;
 }
-.picker__day--selected,
-.picker__day--selected:hover {
-  border-color: <?php echo $main_color; ?>;
-}
-.picker__day--highlighted {
-  background: <?php echo $main_color; ?>;
-}
 .picker__day--disabled:before {
   border-top-color: <?php echo adjustBrightness($background_color, -75); ?>;
 }
@@ -408,13 +421,24 @@ input[readonly] {
   color: <?php echo $text_color; ?>;
   background: <?php echo adjustBrightness($main_color, 75); ?>;
 }
+.picker__day--highlighted {
+  border-color: <?php echo $main_color; ?>;
+}
 .picker__day--highlighted:hover,
 .picker--focused .picker__day--highlighted {
+  cursor: pointer;
+  background: <?php echo $main_color; ?>;
+  color: <?php echo $background_color; ?>;
+}
+.picker__day--selected,
+.picker__day--selected:hover,
+.picker--focused .picker__day--selected {
   background: <?php echo $main_color; ?>;
   color: <?php echo $background_color; ?>;
 }
 .picker__day--disabled,
-.picker__day--disabled:hover {
+.picker__day--disabled:hover,
+.picker--focused .picker__day--disabled {
   background: <?php echo adjustBrightness($background_color, -10); ?>;
   border-color: <?php echo adjustBrightness($background_color, -10); ?>;
   color: <?php echo adjustBrightness($background_color, -50); ?>;
@@ -431,18 +455,19 @@ input[readonly] {
   text-align: center;
 }
 .picker__button--today,
-.picker__button--clear {
+.picker__button--clear,
+.picker__button--close {
   border: 1px solid <?php echo $background_color; ?>;
   background: <?php echo $background_color; ?>;
-  color: <?php echo $text_color; ?>;
   font-size: .8em;
   padding: .66em 0;
   font-weight: bold;
-  width: 50%;
+  width: 33%;
   display: inline-block;
   vertical-align: bottom;
 }
 .picker__button--today:hover,
+.picker__button--close:hover,
 .picker__button--clear:hover {
   cursor: pointer;
   color: <?php echo $text_color; ?>;
@@ -450,32 +475,52 @@ input[readonly] {
   border-bottom-color: <?php echo adjustBrightness($main_color, 75); ?>;
 }
 .picker__button--today:focus,
-.picker__button--clear:focus {
+.picker__button--clear:focus,
+.picker__button--close:focus {
   background: <?php echo adjustBrightness($main_color, 75); ?>;
   border-color: <?php echo $main_color; ?>;
   outline: none;
 }
 .picker__button--today:before,
-.picker__button--clear:before {
+.picker__button--clear:before,
+.picker__button--close:before {
   position: relative;
   display: inline-block;
   height: 0;
 }
-.picker__button--today:before {
+.picker__button--today:before,
+.picker__button--clear:before {
   content: " ";
   margin-right: .45em;
+}
+.picker__button--today:before {
   top: -0.05em;
   width: 0;
   border-top: 0.66em solid <?php echo adjustBrightness($main_color, -50); ?>;
   border-left: .66em solid transparent;
 }
 .picker__button--clear:before {
+  top: -0.25em;
+  width: .66em;
+  border-top: 3px solid #ee2200;
+}
+.picker__button--close:before {
   content: "\D7";
-  margin-right: .35em;
   top: -0.1em;
-  color: #ee2200;
   vertical-align: top;
   font-size: 1.1em;
+  margin-right: .35em;
+  color: #777777;
+}
+.picker__button--today[disabled],
+.picker__button--today[disabled]:hover {
+  background: #f5f5f5;
+  border-color: #f5f5f5;
+  color: #dddddd;
+  cursor: default;
+}
+.picker__button--today[disabled]:before {
+  border-top-color: #aaaaaa;
 }
 
 /* ==========================================================================

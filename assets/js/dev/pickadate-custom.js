@@ -2,8 +2,7 @@
 	$(document).ready(function() {
 
 		$input = $('.datepicker').pickadate({
-			close: '',
-	        formatSubmit: 'yyyy-mm-dd'
+			formatSubmit: 'yyyy-mm-dd'
 		});
 
 		// $input = $('.datepicker').pickadate();
@@ -17,6 +16,7 @@
 
 		var productType = ajax_object.product_type;
 		var bookingMin, bookingMax, firstDate;
+		var session = false;
 
 		var calc_mode = ajax_object.calc_mode; // Days or Nights
 
@@ -33,10 +33,13 @@
 			var $pickerWrap = $('.wceb_picker_wrap');
 				$pickerWrap.hide();
 
+			$('.price').find('.wceb-price-format').hide();
+
 			$('body').on('found_variation', '.variations_form', function(e, variation) {
 
 				if ( ! variation.is_purchasable || ! variation.is_in_stock || ! variation.variation_is_visible || ! variation.is_bookable ) {
 					$pickerWrap.hide();
+					$('.price').find('.wceb-price-format').hide();
 				} else {
 					$pickerWrap.slideDown( 200 );
 
@@ -47,7 +50,9 @@
 					firstDate = ajax_object.first_date[variationId],
 					bookingMin = ajax_object.min[variationId];
 
-					initPicker( firstDate );
+					initPicker( firstDate, bookingMin );
+
+					$('.price').find('.wceb-price-format').show();
 				}
 
 			});
@@ -86,6 +91,8 @@
 			pickerStart.set( 'min', firstDay, { muted: true });
 			pickerEnd.set( 'min', endFirstDay, { muted: true });
 
+			
+
 		}
 
 		function ebs_get_first_available_date( firstDate ) {
@@ -95,11 +102,17 @@
 		}
 
 		ebs_clear_booking_session = function() {
-			var data = {
-				action: 'clear_booking_session'
-			};
 
-			$.post(ajax_object.ajax_url, data);
+			if ( session ) {
+
+				var data = {
+					action: 'clear_booking_session'
+				};
+			
+				$.post(ajax_object.ajax_url, data, function( response ) {
+					session = response;
+				});
+			}
 
 		}
 
@@ -209,6 +222,48 @@
 
 		}
 
+		// WooCommerce Product Add-ons compatibility
+		getAdditionalCosts = function() {
+
+			var total = 0;
+
+			$('form.cart').find( '.addon' ).each( function() {
+				var addon_cost = 0;
+
+				if ( $(this).is('.addon-custom-price') ) {
+					addon_cost = $(this).val();
+				} else if ( $(this).is('.addon-input_multiplier') ) {
+					if( isNaN( $(this).val() ) || $(this).val() == "" ) { // Number inputs return blank when invalid
+						$(this).val('');
+						$(this).closest('p').find('.addon-alert').show();
+					} else {
+						if( $(this).val() != "" ){
+							$(this).val( Math.ceil( $(this).val() ) );
+						}
+						$(this).closest('p').find('.addon-alert').hide();
+					}
+					addon_cost = $(this).data('price') * $(this).val();
+				} else if ( $(this).is('.addon-checkbox, .addon-radio') ) {
+					if ( $(this).is(':checked') )
+						addon_cost = $(this).data('price');
+				} else if ( $(this).is('.addon-select') ) {
+					if ( $(this).val() )
+						addon_cost = $(this).find('option:selected').data('price');
+				} else {
+					if ( $(this).val() )
+						addon_cost = $(this).data('price');
+				}
+
+				if ( ! addon_cost )
+					addon_cost = 0;
+
+				total += addon_cost;
+			});
+
+			return total;
+
+		}
+
 		ebs_set_price = function(startDate, endDate, startDateDisplay, endDateDisplay) {
 
 			if ( productType === 'variable' ) {
@@ -219,6 +274,9 @@
 			
 			variation_id = $('.variations_form').find('input.variation_id').val();
 
+			// WooCommerce Product Add-ons compatibility
+			var additionalCost = getAdditionalCosts();
+
 			var data = {
 				action: 'add_new_price',
 				product_id: product_id,
@@ -226,7 +284,8 @@
 				start: startDateDisplay,
 				end: endDateDisplay,
 				start_format: startDate,
-				end_format: endDate
+				end_format: endDate,
+				additional_cost: additionalCost
 			};
 
 			var this_page = window.location.toString();
@@ -255,19 +314,31 @@
 
 				// Unblock
 				$('form.cart').stop(true).css('opacity', '1').unblock();
+
+				session = fragments.session;
 			
 			});
 		}
 
 		pickerStart.on({
+			render: function() {
+				pickerStart.$root.find('.picker__header').prepend('<div class="picker__title">' + ajax_object.start_text + '</div>');
+			},
 			set: function(startTime) {
 
 				if ( typeof startTime.clear != 'undefined' && startTime.clear == null ) {
 
 					var minAfterClear = ebs_get_first_available_date( firstDate ) + parseInt( bookingMin );
 
-					if ( minAfterClear === 0 )
-						minAfterClear = true;
+					if ( minAfterClear === 0 ) {
+
+						 if ( calc_mode === 'nights') {
+						 	minAfterClear = 1;
+						 } else {
+						 	minAfterClear = true;
+						 }
+						
+					}	
 
 					if ( calc_mode === 'nights' && bookingMin === 0 && minAfterClear != true )
 						minAfterClear += 1;
@@ -283,6 +354,7 @@
 					}, { muted: true });
 
 					startPick = undefined;
+
 					ebs_clear_booking_session();
 				}
 
@@ -316,10 +388,18 @@
 					return false;
 				}
 				
+			},
+			close: function() {
+				$(document.activeElement).blur();
+				if ( typeof startPick != 'undefined' && typeof endPick == 'undefined' )
+					setTimeout(function() { pickerEnd.open(); }, 250);
 			}
 		});
 
 		pickerEnd.on({
+			render: function() {
+				pickerEnd.$root.find('.picker__header').prepend('<div class="picker__title">' + ajax_object.end_text + '</div>');
+			},
 			set: function(endTime) {
 
 				if ( typeof endTime.clear != 'undefined' && endTime.clear == null ) {
@@ -337,6 +417,7 @@
 					}, { muted: true });
 
 					endPick = undefined;
+
 					ebs_clear_booking_session();
 				}
 
@@ -370,7 +451,49 @@
 					return false;
 				}
 				
+			},
+			close: function() {
+				$(document.activeElement).blur();
 			}
+		});
+
+		// WooCommerce Product Add-ons compatibility
+		$('body').on('updated_addons', function() {
+
+			if ( productType === 'variable' ) {
+
+				var variationId = $('.variations_form').find('input.variation_id').val(),
+				product_price = parseInt( ajax_object.product_price[variationId] );
+
+			} else {
+
+				var product_price = parseInt( ajax_object.product_price );
+
+			}
+
+			var addon_costs = getAdditionalCosts();
+			
+			var total_price = parseFloat(addon_costs + product_price);
+
+			if ( addon_costs > 0 ) {
+				pickerStart.clear();
+				pickerEnd.clear();
+			}
+
+			var formatted_total = accounting.formatMoney( total_price, {
+				symbol 		: ajax_object.currency_format_symbol,
+				decimal 	: ajax_object.currency_format_decimal_sep,
+				thousand	: ajax_object.currency_format_thousand_sep,
+				precision 	: ajax_object.currency_format_num_decimals,
+				format		: ajax_object.currency_format
+			} );
+
+			if ( productType === 'variable' ) {
+				$('.single_variation .price .amount').html(formatted_total);
+			} else {
+				$('p.booking_price .price .amount').html(formatted_total);
+			}
+			
 		});
 
 	});

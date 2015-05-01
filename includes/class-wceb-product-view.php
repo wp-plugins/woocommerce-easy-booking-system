@@ -13,7 +13,7 @@ class WCEB_Product_View {
         $this->options = get_option('easy_booking_settings');
         
         add_filter( 'woocommerce_available_variation', array( $this, 'easy_booking_add_variation_bookable_attribute' ), 10, 3);
-		add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'easy_booking_before_add_to_cart_button' ));
+		add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'easy_booking_before_add_to_cart_button' ), 20);
         add_filter( 'woocommerce_get_price_html', array( $this, 'easy_booking_add_price_html' ), 10, 2 );
 	}
 
@@ -45,7 +45,8 @@ class WCEB_Product_View {
         $start_date_text = $this->options['easy_booking_start_date_text'];
         $end_date_text = $this->options['easy_booking_end_date_text'];
         $product_price = $product->get_price();
-        $currency = get_woocommerce_currency_symbol(); // Currency
+
+        $args = apply_filters( 'easy_booking_new_price_args', array() );
 
         // Product is bookable
         if ( isset( $is_bookable ) && $is_bookable === 'yes' ) {
@@ -74,7 +75,7 @@ class WCEB_Product_View {
 
             // If product is not variable, add a new price field before add to cart button
             if ( ! $product->is_type( 'variable' ) )
-                echo '<p class="booking_price"><span class="price">' . wc_price( $product_price ) . '</span></p>';
+                echo '<p class="booking_price"><span class="price">' . wc_price( $product_price, $args ) . '</span></p>';
 
         }
     }
@@ -93,10 +94,20 @@ class WCEB_Product_View {
         $product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : $post->ID; // Product ID
         
         $is_bookable = WCEB()->easy_booking_is_bookable( $product_id ); // Is it bookable ?
+        $wceb_settings = get_option('easy_booking_settings');
+        $calc_mode = $wceb_settings['easy_booking_calc_mode'];
 
         // If bookable, return a price / day. If not, return normal price
         if ( isset( $is_bookable ) && $is_bookable === 'yes' ) {
-            $display_price = $content . __(' / day', 'easy_booking');
+
+            if ( $calc_mode === 'nights' ) {
+                $price_text = __(' / night', 'easy_booking');
+            } else {
+                $price_text = __(' / day', 'easy_booking');
+            }
+            
+            $display_price = $content . '<span class="wceb-price-format">' . $price_text . '</span>';
+
             return apply_filters( 'easy_booking_display_price', $display_price, $content );
         } else {
             return $content;

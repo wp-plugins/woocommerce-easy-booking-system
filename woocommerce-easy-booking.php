@@ -169,7 +169,7 @@ class Easy_booking {
 
                 $is_bookable = WCEB()->easy_booking_is_bookable( $product_id, $variation_id );
 
-                if ( isset( $is_bookable ) && $is_bookable === 'yes' && ! empty( $product->id ) && $product->managing_stock() ) {
+                if ( isset( $is_bookable ) && $is_bookable === 'yes' && ! empty( $product->id ) ) {
 
                     if ( isset( $item['ebs_start_format'] ) && isset( $item['ebs_end_format'] ) ) {
 

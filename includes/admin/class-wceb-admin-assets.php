@@ -50,7 +50,13 @@ class WCEB_Admin_Assets {
             wp_enqueue_script( 'pickadate-custom-admin', plugins_url( 'assets/js/admin/pickadate-custom-admin.min.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate'), '1.0', true);
             // wp_enqueue_script( 'pickadate-custom-admin', plugins_url('assets/js/admin/dev/pickadate-custom-admin.js', WCEB_PLUGIN_FILE), array('jquery', 'pickadate'), '1.0', true );
 
-            wp_register_style( 'picker', plugins_url( 'assets/css/' . $theme . '.min.css', WCEB_PLUGIN_FILE ), true);
+            if ( function_exists( 'is_multisite' ) && is_multisite() ) {
+                $blog_id = get_current_blog_id();
+                wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.' . $blog_id . '.min.css.php', WCEB_PLUGIN_FILE), true);
+            } else {
+                wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.min.css.php', WCEB_PLUGIN_FILE), true);
+            }
+            
             wp_enqueue_style( 'picker' );
 
             wp_localize_script( 'pickadate-custom-admin', 'order_ajax_info',
@@ -73,7 +79,7 @@ class WCEB_Admin_Assets {
             // wp_enqueue_script( 'picker.date', plugins_url( 'assets/js/dev/picker.date.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true);
             // wp_enqueue_script( 'legacy', plugins_url( 'assets/js/dev/legacy.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true);
 
-            if ( get_bloginfo( 'text_direction' ) === 'rtl' ) {
+            if ( is_rtl() ) {
                 // Load Right to left CSS file
                 wp_register_style( 'rtl-style', plugins_url( 'assets/css/rtl.min.css', WCEB_PLUGIN_FILE ), true );
                 // wp_register_style( 'rtl-style', plugins_url('assets/css/dev/rtl.css', WCEB_PLUGIN_FILE), true);

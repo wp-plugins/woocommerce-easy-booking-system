@@ -2,8 +2,8 @@
 Contributors: @_Ashanna, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products, book, rent, e-commerce
 Requires at least: 3.8, WooCommerce 2.3
-Tested up to: 4.1.1
-Stable tag: 1.5
+Tested up to: 4.2
+Stable tag: 1.5.1
 License: GPLv2 or later
 
 WooCommerce Easy Booking allows users to add an option to book or rent their products.
@@ -30,10 +30,33 @@ First, you need to install WooCommerce.
 3. Go to the WooCommerce Easy Booking tab to set up the plugin
 4. Go to the WooCommerce Product Page your want to allow for booking or renting
 5. Check the "Bookable" checkbox next to the product type dropdown
-6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page (or the variations tab for variable products).
+6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page (or the "Variations" tab for variable products).
 7. And you're done !
 
 == Changelog ==
+
+= 1.5.1 =
+
+* Fix - Right to left function deprecated in WordPress 4.2.
+* Fix - Backward compatibility with product booking metadata.
+* Fix - First available date on start picker when minimum booking duration is set.
+* Fix - is_bookable() function for variable products.
+* Fix - Removed unnecessary Ajax call when clearing booking session.
+* Fix - Input focus which made the calendar pop up when closing and opening window.
+* Fix - Generated CSS after saving plugin settings.
+* Fix - Registered CSS file for multisites.
+* Fix - Price displayed on archive page for bookable products.
+* Fix - Displayed price on non-bookable variable products.
+* Add - Reports page on the admin.
+* Add - "/ night" price when in "nights" mode.
+* Add - Remove "/ day" or "/ night" text when variation is not bookable.
+* Add - "WooCommerce Product Add-ons" compatibility. Please, refer to the documentation for more information about this : http://herownsweetway.com/product/woocommerce-easy-booking/#documentation.
+* Add - Automatically open second date picker after selecting first date.
+* Add - Calendar titles.
+* Add - Minifying CSS on-the-fly after saving plugin settings.
+* Add - Close button on the calendar.
+* Update - Pickadate.js version 3.5.6.
+* Remove - WooCommerce Currency Switcher compatibility. Please, refer to the documentation to makes these plugins compatible : http://herownsweetway.com/product/woocommerce-easy-booking/#documentation.
 
 = 1.5 =
 

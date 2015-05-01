@@ -3,7 +3,7 @@
 Plugin Name: Woocommerce Easy Booking
 Plugin URI: http://herownsweetway.com/product/woocommerce-easy-booking/
 Description: Allows users to rent or book products
-Version: 1.5
+Version: 1.5.1
 Author: @_Ashanna
 Author URI: http://ashanna.com
 Licence : GPLv2 or later
@@ -63,12 +63,13 @@ class Easy_booking {
     }
 
     public function easy_booking_includes() {
-        include_once( 'includes/settings/class-wceb-settings.php' );
         include_once( 'includes/class-wceb-ajax.php' );
         include_once( 'includes/class-wceb-checkout.php' );
     }
 
     public function easy_booking_admin_includes() {
+        include_once( 'includes/settings/class-wceb-settings.php' );
+        include_once( 'includes/settings/class-wceb-reports.php' );
         include_once( 'includes/admin/class-wceb-product-settings.php' );
         include_once( 'includes/admin/class-wceb-order.php' );
         include_once( 'includes/admin/class-wceb-admin-assets.php' );
@@ -100,7 +101,8 @@ class Easy_booking {
     public function easy_booking_is_bookable( $product_id, $variation_id = '' ) {
         $is_bookable = false;
         $product = wc_get_product( $product_id );
-        if ( $product->is_type( 'simple' ) ) {
+
+        if ( $product->is_type( 'simple' ) || $product->is_type( 'variation' ) ) {
 
             $is_bookable = get_post_meta( $product_id, '_booking_option', true );
 
@@ -113,8 +115,9 @@ class Easy_booking {
 
                 $bookable_variation = array();
                 if ( $variation_ids ) foreach ( $variation_ids as $variation_id ) {
+                    $variation_is_bookable = get_post_meta( $variation_id, '_booking_option', true );
                     
-                    if ( ! get_post_meta( $variation_id, '_booking_option', true ) === 'yes' ) {
+                    if ( $variation_is_bookable !== 'yes' ) {
                         continue;
                     } else {
                         $bookable_variation[] = $variation_id;
@@ -131,6 +134,91 @@ class Easy_booking {
 
         return $is_bookable;
             
+    }
+
+    public function easy_booking_get_booked_items_from_orders() {
+
+        $args = array(
+            'post_type' => 'shop_order',
+            'post_status' => apply_filters( 
+                                'easy_booking_get_order_statuses',
+                                array(
+                                    'wc-pending',
+                                    'wc-processing',
+                                    'wc-on-hold',
+                                    'wc-completed',
+                                    'wc-refunded'
+                                ) ),
+            'posts_per_page' => -1
+        );
+
+        $query_orders = new WP_Query( $args );
+        $products = array();
+        foreach ( $query_orders->posts as $post ) :
+
+            $order_id = $post->ID;
+            $order = new WC_Order( $order_id );
+            $items = $order->get_items();
+
+            if ( $items ) foreach ( $items as $item_id => $item ) {
+
+                $product_id = $item['product_id'];
+                $variation_id = $item['variation_id'];
+
+                $product = $order->get_product_from_item( $item );
+
+                $is_bookable = WCEB()->easy_booking_is_bookable( $product_id, $variation_id );
+
+                if ( isset( $is_bookable ) && $is_bookable === 'yes' && ! empty( $product->id ) && $product->managing_stock() ) {
+
+                    if ( isset( $item['ebs_start_format'] ) && isset( $item['ebs_end_format'] ) ) {
+
+                        $id = empty( $variation_id ) || $variation_id === '0' ? $product_id : $variation_id;
+                        $start = $item['ebs_start_format'];
+                        $end = $item['ebs_end_format'];
+
+                        $quantity = intval( $item['qty'] );
+
+                        $refunded_qty = $order->get_qty_refunded_for_item( $item_id );
+
+                        if ( $refunded_qty > 0 )
+                            $quantity = $quantity - $refunded_qty;
+
+                        if ( $quantity <= 0 )
+                            continue;
+
+                        $products[] = apply_filters( 'easy_booking_booked_reports', array(
+                            'product_id' => $id,
+                            'order_id' => $order_id,
+                            'start' => $start,
+                            'end' => $end,
+                            'qty' => $quantity
+                        ));
+
+                    }
+
+                }
+            
+            }
+
+        endforeach;
+
+        $booked = array();
+        if ( $products ) foreach ( $products as $booked_product ) {
+
+            $product_id = $booked_product['product_id'];
+            $start = $booked_product['start'];
+            $end = $booked_product['end'];
+            $quantity = intval( $booked_product['qty'] );
+
+            unset( $booked_product['product_id'] );
+            
+            $booked[$product_id][] = $booked_product;
+
+        }
+
+        return array_filter( $booked );
+
     }
 
 }

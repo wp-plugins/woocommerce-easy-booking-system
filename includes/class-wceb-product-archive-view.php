@@ -24,7 +24,11 @@ class WCEB_Product_Archive_View {
     public function easy_booking_custom_loop_add_to_cart( $content, $product ) {
         global $post, $product;
 
-        $is_bookable = get_post_meta($post->ID, '_booking_option', true);
+        if ( ! $product )
+            return;
+
+        // Is product bookable ?
+        $is_bookable = WCEB()->easy_booking_is_bookable( $product->id );
 
         // If product is bookable
         if ( isset( $is_bookable ) && $is_bookable === 'yes' ) {

@@ -154,7 +154,7 @@ class WCEB_Cart {
     function easy_booking_add_cart_item( $cart_item ) {
 
         if ( isset( $cart_item['_booking_price'] ) && $cart_item['_booking_price'] > 0 ) {
-            $booking_price = $cart_item['_booking_price'];
+            $booking_price = apply_filters( 'easy_booking_set_booking_price', $cart_item['_booking_price'], $cart_item );
             $cart_item['data']->set_price( $booking_price );
         }
  

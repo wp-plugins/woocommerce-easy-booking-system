@@ -2,8 +2,8 @@
 Contributors: @_Ashanna, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products, book, rent, e-commerce
 Requires at least: 3.8, WooCommerce 2.3
-Tested up to: 4.2
-Stable tag: 1.5.1
+Tested up to: 4.2.2
+Stable tag: 1.5.2
 License: GPLv2 or later
 
 WooCommerce Easy Booking allows users to add an option to book or rent their products.
@@ -34,6 +34,10 @@ First, you need to install WooCommerce.
 7. And you're done !
 
 == Changelog ==
+
+= 1.5.2 =
+
+* Fix - Issue with WordPress 4.2.2 causing an error.
 
 = 1.5.1 =
 

@@ -1,5 +1,1 @@
-(function($) {
-	$(document).ready(function() {
-    	$('.color-field').wpColorPicker();  
-	});
-})(jQuery);
+!function(o){o(document).ready(function(){o(".color-field").wpColorPicker()})}(jQuery);

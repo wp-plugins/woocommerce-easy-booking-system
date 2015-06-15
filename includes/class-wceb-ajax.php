@@ -27,8 +27,6 @@ class WCEB_Ajax {
     *
     **/
     public function easy_booking_get_new_price() {
-        global $post;
-
         $product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : ''; // Product ID
         $variation_id = isset( $_POST['variation_id'] ) ? absint ( $_POST['variation_id'] ) : ''; // Variation ID
         

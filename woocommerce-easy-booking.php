@@ -3,7 +3,7 @@
 Plugin Name: Woocommerce Easy Booking
 Plugin URI: http://herownsweetway.com/product/woocommerce-easy-booking/
 Description: Allows users to rent or book products
-Version: 1.5.1
+Version: 1.6
 Author: @_Ashanna
 Author URI: http://ashanna.com
 Licence : GPLv2 or later
@@ -54,12 +54,17 @@ class Easy_booking {
         $this->easy_booking_includes();
 
         if ( is_admin() ) {
-           $this->easy_booking_admin_includes(); 
+
+            $this->easy_booking_admin_includes();
+
+            
         }
         
         if ( ! is_admin() || defined( 'DOING_AJAX' ) ) {
             $this->easy_booking_frontend_includes();
         }
+
+
     }
 
     public function easy_booking_includes() {
@@ -88,6 +93,36 @@ class Easy_booking {
 
         if ( get_option( 'easy_booking_display_notice_ebdd-info' ) != 1 )
             include( 'includes/admin/views/wceb-html-notice-ebdd.php' );
+
+        // Backward compatibility 1.6
+        if ( get_option( 'easy_booking_update_variable_product_meta' ) != 1 )
+            $this->easy_booking_update_variable_product_meta();
+    }
+
+    public function easy_booking_update_variable_product_meta() {
+        $args = array(
+            'post_type'      => array( 'product' ),
+            'posts_per_page' => -1,
+            'post_status'    => 'publish',
+            'order'          => 'ASC',
+            'orderby'        => 'parent title'
+        );
+
+        $posts = get_posts( $args );
+
+        if ( $posts ) foreach ( $posts as $post ) {
+
+            $product_id = $post->ID;
+
+            $product = wc_get_product( $product_id );
+            if ( $product->is_type('variable') ) {
+                $is_bookable = $this->easy_booking_is_bookable( $product_id );
+                if ( $is_bookable === 'yes' ) update_post_meta( $product_id, '_booking_option', 'yes' );
+            }
+
+        }
+
+        update_option( 'easy_booking_update_variable_product_meta', 1 );
     }
 
     // Add settings link
@@ -101,6 +136,9 @@ class Easy_booking {
     public function easy_booking_is_bookable( $product_id, $variation_id = '' ) {
         $is_bookable = false;
         $product = wc_get_product( $product_id );
+
+        if ( ! $product || ! is_object( $product ) )
+            return false;
 
         if ( $product->is_type( 'simple' ) || $product->is_type( 'variation' ) ) {
 
@@ -219,6 +257,23 @@ class Easy_booking {
 
         return array_filter( $booked );
 
+    }
+
+    // CSS minifying function
+    public function easy_booking_minify_css( $css ) {
+        // Remove comments
+        $css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
+
+        // Remove space after colons
+        $css = str_replace(': ', ':', $css);
+
+        // Remove space before brackets
+        $css = str_replace(' {', '{', $css);
+
+        // Remove whitespace
+        $css = str_replace( array( "\r\n", "\r", "\n", "\t", '  ', '    ', '    ' ), '', $css );
+
+        return $css;
     }
 
 }

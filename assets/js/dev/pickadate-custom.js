@@ -10,22 +10,31 @@
 		$inputEnd = $('.datepicker_end').pickadate();
 
 		// Use the picker object directly.
-		picker = $input.pickadate('picker');
 		pickerStart = $inputStart.pickadate('picker');
 		pickerEnd = $inputEnd.pickadate('picker');
 
-		var productType = ajax_object.product_type;
-		var bookingMin, bookingMax, firstDate;
-		var session = false;
+		var pickerStartItem = pickerStart.component.item,
+			pickerEndItem = pickerEnd.component.item;
 
-		var calc_mode = ajax_object.calc_mode; // Days or Nights
+		var productType = ajax_object.product_type,
+			calc_mode = ajax_object.calc_mode, // Days or Nights
+			bookingMin, bookingMax, firstDate,
+			session = false;
 
 		if ( productType === 'simple' ) {
 			var firstDate = ajax_object.first_date,
 				bookingMin = ajax_object.min,
 				bookingMax = ajax_object.max;
 
-			initPicker( firstDate, bookingMin );
+			initPickers( firstDate, bookingMin );
+
+			$('body').trigger( 'pickers_init' );
+
+			pickerStart.render();
+			pickerEnd.render();
+			
+			$('body').trigger( 'after_pickers_init' );
+
 		}
 
 		if ( productType === 'variable' ) {
@@ -43,14 +52,18 @@
 				} else {
 					$pickerWrap.slideDown( 200 );
 
-					pickerStart.clear();
-					pickerEnd.clear();
-
-					variationId = variation.variation_id,
-					firstDate = ajax_object.first_date[variationId],
+					variationId = variation.variation_id;
+					firstDate = ajax_object.first_date[variationId];
 					bookingMin = ajax_object.min[variationId];
 
-					initPicker( firstDate, bookingMin );
+					initPickers( firstDate, bookingMin );
+
+					$('body').trigger( 'pickers_init', [variation] );
+
+					pickerStart.render();
+					pickerEnd.render();
+
+					$('body').trigger( 'after_pickers_init', [variation] );
 
 					$('.price').find('.wceb-price-format').show();
 				}
@@ -63,7 +76,7 @@
 
 		}
 
-		function initPicker( firstDate, bookingMin ) {
+		function initPickers( firstDate, bookingMin ) {
 			var firstDay = ebs_get_first_available_date( firstDate );
 
 			if ( bookingMin > 0 ) { // If minimum booking duration is set
@@ -83,16 +96,68 @@
 			}
 
 			if ( firstDay <= 0 )
-				firstDay = true;
+				firstDay = false;
 
 			if ( endFirstDay <= 0 )
-				endFirstDay = true;
+				endFirstDay = false;
 
-			pickerStart.set( 'min', firstDay, { muted: true });
-			pickerEnd.set( 'min', endFirstDay, { muted: true });
+			var minObject = createDateObject( false, firstDay ),
+				endMinObject = createDateObject( false, endFirstDay ),
+				max = createDateObject( 'infinity' ),
+				highlight = createDateObject(),
+				view = createDateObject( new Date( highlight.year, highlight.month, 1 ) );
 
+			pickerStartItem.clear = null;
+			pickerStartItem.select = undefined;
+			pickerStartItem.min = minObject;
+			pickerStartItem.max = max;
+			pickerStartItem.highlight = highlight;
+			pickerStartItem.view = view;
+
+			pickerStart.$node.val('');
 			
+			pickerEndItem.clear = null;
+			pickerEndItem.select = undefined;
+			pickerEndItem.min = endMinObject;
+			pickerEndItem.max = max;
+			pickerEndItem.highlight = highlight;
+			pickerEndItem.view = view;
 
+			pickerEnd.$node.val('');
+
+			return false;
+
+		}
+
+		function createDateObject( date, add ) {
+			if ( ! date ) var date = new Date();
+			if ( add ) date.setDate( date.getDate() + add );
+
+			if ( date === 'infinity' ) {
+				var dateObject = {
+					date: Infinity,
+					day: Infinity,
+					month: Infinity,
+					obj: Infinity,
+					pick: Infinity,
+					year: Infinity
+				}
+
+				return dateObject;
+			}
+
+			date.setHours(0,0,0,0);
+
+			var dateObject = {
+				date: date.getDate(),
+				day: date.getDay(),
+				month: date.getMonth(),
+				obj: date,
+				pick: date.getTime(),
+				year: date.getFullYear()
+			}
+
+			return dateObject;
 		}
 
 		function ebs_get_first_available_date( firstDate ) {
@@ -325,44 +390,55 @@
 				pickerStart.$root.find('.picker__header').prepend('<div class="picker__title">' + ajax_object.start_text + '</div>');
 			},
 			set: function(startTime) {
+				var pickerEndItem = pickerEnd.component.item,
+					startSet = pickerStart.get('select'),
+					endSet = pickerEnd.get('select');
 
+				// Clear Start Picker
 				if ( typeof startTime.clear != 'undefined' && startTime.clear == null ) {
 
 					var minAfterClear = ebs_get_first_available_date( firstDate ) + parseInt( bookingMin );
 
-					if ( minAfterClear === 0 ) {
+					if ( calc_mode === 'nights' && bookingMin == 0 && minAfterClear != 0 )
+						minAfterClear += 1;
+
+					if ( minAfterClear == 0 ) {
 
 						 if ( calc_mode === 'nights') {
 						 	minAfterClear = 1;
-						 } else {
-						 	minAfterClear = true;
 						 }
 						
-					}	
+					}
 
-					if ( calc_mode === 'nights' && bookingMin === 0 && minAfterClear != true )
-						minAfterClear += 1;
-
-					if ( calc_mode === 'days' && bookingMin > 0 && minAfterClear != true )
+					if ( calc_mode === 'days' && bookingMin > 0 && minAfterClear != 0 )
 						minAfterClear -= 1;
 
-					pickerEnd.set({
-						disable: false,
-						min: minAfterClear,
-						max: false,
-						highlight: new Date()
-					}, { muted: true });
+					var min = createDateObject( false, minAfterClear ),
+						max = createDateObject( 'infinity' ),
+						view = createDateObject( new Date(min.year,min.month,01) );
 
-					startPick = undefined;
+					pickerEndItem.disable = [];
+					pickerEndItem.min = min;
+					pickerEndItem.max = max;
+
+					if ( endSet == null ) {
+						pickerEndItem.highlight = min;
+						pickerEndItem.view = view;
+					}
+
+					$('body').trigger('clear_start_picker', pickerEndItem );
+
+					pickerEnd.render();
 
 					ebs_clear_booking_session();
 				}
 
+				// Set Start Picker
 				if ( startTime.select && typeof startTime.select != 'undefined' ) {
 
 					startPick = startTime.select;
 					startDate = pickerStart.get('select', 'yyyy-mm-dd');
-					var disabledDate = pickerStart.get('select');
+					disabledDate = pickerStart.get('select');
 					startDateDisplay = pickerStart.get('select', 'dd mmmm yyyy');
 
 					// Hotfix for pickadate.js bug when selecting dates with keyboard, waiting for v4.0 fix
@@ -370,19 +446,29 @@
 						startPick = startTime.select.pick;
 					}
 
-					var minAndMax = ebs_get_min_and_max( disabledDate, 'plus' );
-					var min = minAndMax.min;
-					var max = minAndMax.max;
-				
-					pickerEnd.set({
-						min: min,
-						max: max,
-						highlight: min
-					}, { muted: true });
+					var minAndMax = ebs_get_min_and_max( disabledDate, 'plus' ),
+						min = minAndMax.min,
+						max = minAndMax.max;
 
-					if ( typeof startPick != 'undefined' && typeof endPick != 'undefined' )
-						ebs_set_price(startDate, endDate, startDateDisplay, endDateDisplay);
-						
+					if ( ! max ) max = 'infinity';
+
+					var min = createDateObject( min ),
+						max = createDateObject( max ),
+						view = createDateObject( new Date(min.year,min.month,01) );
+
+					pickerEndItem.min = min;
+					pickerEndItem.max = max;
+
+					if ( endSet == null ) {
+						pickerEndItem.highlight = min;
+						pickerEndItem.view = view;
+					}
+
+					$('body').trigger('set_start_picker', [pickerEndItem, startPick] );
+					pickerEnd.render();
+
+					if ( startSet != null && endSet != null )
+						ebs_set_price(startDate, endDate, endSet, endDateDisplay);
 
 				} else {
 					return false;
@@ -391,7 +477,11 @@
 			},
 			close: function() {
 				$(document.activeElement).blur();
-				if ( typeof startPick != 'undefined' && typeof endPick == 'undefined' )
+
+				var startSet = pickerStart.get('select'),
+					endSet = pickerEnd.get('select');
+
+				if ( startSet != null && endSet == null )
 					setTimeout(function() { pickerEnd.open(); }, 250);
 			}
 		});
@@ -401,31 +491,40 @@
 				pickerEnd.$root.find('.picker__header').prepend('<div class="picker__title">' + ajax_object.end_text + '</div>');
 			},
 			set: function(endTime) {
+				var startSet = pickerStart.get('select'),
+					endSet = pickerEnd.get('select');
 
+				// Clear End Picker
 				if ( typeof endTime.clear != 'undefined' && endTime.clear == null ) {
 
 					var minAfterClear = ebs_get_first_available_date( firstDate );
 
-					if ( minAfterClear === 0 )
-						minAfterClear = true;
+					var min = createDateObject( false, minAfterClear ),
+						max = createDateObject( 'infinity' );
+						highlight = createDateObject(),
+						view = createDateObject( new Date(highlight.year,highlight.month,01) );
 
-					pickerStart.set({
-						disable: false,
-						min: minAfterClear,
-						max: false,
-						highlight: new Date()
-					}, { muted: true });
+					pickerStartItem.disable = [];
+					pickerStartItem.min = min;
+					pickerStartItem.max = max;
 
-					endPick = undefined;
+					if ( startSet == null ) {
+						pickerStartItem.highlight = highlight;
+						pickerStartItem.view = view;
+					}
+
+					$('body').trigger('clear_end_picker', pickerStartItem );
+					pickerStart.render();
 
 					ebs_clear_booking_session();
 				}
 
+				// Set End Picker
 				if ( endTime.select && typeof endTime.select != 'undefined' ) {
 
 					endPick = endTime.select;
 					endDate = pickerEnd.get('select', 'yyyy-mm-dd');
-					var disabledEndDate = pickerEnd.get('select');
+					disabledEndDate = pickerEnd.get('select');
 					endDateDisplay = pickerEnd.get('select', 'dd mmmm yyyy');
 
 					// Hotfix for pickadate.js bug when selecting dates with keyboard, waiting for v4.0 fix
@@ -433,19 +532,29 @@
 						endPick = endTime.select.pick;
 					}
 
-					var minAndMax = ebs_get_min_and_max( disabledEndDate, 'minus' );
-					var min = minAndMax.min;
-					var max = minAndMax.max;
+					var minAndMax = ebs_get_min_and_max( disabledEndDate, 'minus' ),
+						min = minAndMax.min,
+						max = minAndMax.max;
 
-					pickerStart.set({
-						min: min,
-						max: max,
-						highlight: min
-					}, { muted: true });
+					if ( ! max ) max = 'infinity';
 
-					if ( typeof startPick != 'undefined' && typeof endPick != 'undefined' )
+					var min = createDateObject( min ),
+						max = createDateObject( max ),
+						view = createDateObject( new Date(min.year,min.month,01) );
+
+					pickerStartItem.min = min;
+					pickerStartItem.max = max;
+
+					if ( startSet == null ) {
+						pickerStartItem.highlight = min;
+						pickerStartItem.view = view;
+					}
+
+					$('body').trigger('set_end_picker', [pickerStartItem, endPick] );
+					pickerStart.render();
+
+					if ( startSet != null && endSet != null )
 						ebs_set_price(startDate, endDate, startDateDisplay, endDateDisplay);
-						
 
 				} else {
 					return false;

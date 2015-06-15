@@ -3,7 +3,7 @@ Contributors: @_Ashanna, @amsul (For pickadate.js)
 Tags: woocommerce, booking, renting, products, book, rent, e-commerce
 Requires at least: 3.8, WooCommerce 2.3
 Tested up to: 4.2.2
-Stable tag: 1.5.2
+Stable tag: 1.6
 License: GPLv2 or later
 
 WooCommerce Easy Booking allows users to add an option to book or rent their products.
@@ -25,15 +25,29 @@ For more features, check these add-ons :
 
 First, you need to install WooCommerce.
 
-1. Install the "WooCommerce Easy Booking" Plugin
-2. Activate the plugin
-3. Go to the WooCommerce Easy Booking tab to set up the plugin
-4. Go to the WooCommerce Product Page your want to allow for booking or renting
-5. Check the "Bookable" checkbox next to the product type dropdown
-6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page (or the "Variations" tab for variable products).
+1. Install the "WooCommerce Easy Booking" Plugin.
+2. Activate the plugin.
+3. Go to the WooCommerce Easy Booking tab to set up the plugin.
+4. Go to the WooCommerce Product Page your want to allow for booking or renting.
+5. Check the "Bookable" checkbox next to the product type dropdown. For variable products, you must check the "Bookable" option both on parent product and on the variation you want to set as bookable.
+6. If you want to set bookings options for each product, go to the "Bookings" tab on the product page (or the "Variations" tab for variable products to manage booking options at variation level).
 7. And you're done !
 
 == Changelog ==
+
+= 1.6 =
+
+/!\ You might have to check variable products after this update. Backward compatibility should be ok, but you might have to check the "Bookable" checkbox again.
+
+* Fix - Hook when saving plugin settings is now triggered when actually saving plugin settings.
+* Fix - New way to generate and minify CSS. The old one was causing issues, especially with multisites.
+* Fix - Calendars CSS, causing issues and conflicting with themes.
+* Add - Possibility to manage booking at parent product level for variable products.
+* Add - Add-ons page on the admin.
+* Add - 'easy_booking_enqueue_additional_scripts' hook to enqueue scripts before the main pickadate script.
+* Add - 'easy_booking_pickadate_dependecies' filter to add dependecies for the main pickadate script.
+* Add - Custom Jquery events when initiliazing and setting calendars.
+* Tweak - Improved Javascript for better flexibility and performance.
 
 = 1.5.2 =
 

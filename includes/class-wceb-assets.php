@@ -27,21 +27,31 @@ class WCEB_Assets {
         $product_type = $product->product_type;
         
         // Load scripts only on product page if "booking" option is checked
-        $is_bookable = WCEB()->easy_booking_is_bookable( $post_id );
-
-        $tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
+        $is_bookable = get_post_meta( $post_id, '_booking_option', true );
 
         if ( isset( $is_bookable ) && $is_bookable === 'yes' ) {
 
+            $tax_display_mode = get_option( 'woocommerce_tax_display_shop' );
+
             if ( $product->is_type( 'simple' ) ) {
 
-                $booking_min = get_post_meta($post->ID, '_booking_min', true) ? get_post_meta($post->ID, '_booking_min', true) : 0;
-                $booking_max = get_post_meta($post->ID, '_booking_max', true) ? get_post_meta($post->ID, '_booking_max', true) : 0;
-                $first_available_date = get_post_meta($post->ID, '_first_available_date', true) ? get_post_meta($post->ID, '_first_available_date', true) : 0;
+                $booking_min = get_post_meta($post_id, '_booking_min', true) ? get_post_meta($post_id, '_booking_min', true) : 0;
+                $booking_max = get_post_meta($post_id, '_booking_max', true) ? get_post_meta($post_id, '_booking_max', true) : 0;
+                $first_available_date = get_post_meta($post_id, '_first_available_date', true) ? get_post_meta($post_id, '_first_available_date', true) : 0;
 
                 $price = $tax_display_mode === 'incl' ? $product->get_price_including_tax() : $product->get_price_excluding_tax(); // Product price (Regular or sale)
 
             } else if ( $product->is_type( 'variable' ) ) {
+
+                $manage_bookings = get_post_meta( $post_id, '_manage_bookings', true );
+                
+                if ( $manage_bookings === 'yes' ) {
+
+                    $parent_booking_min = get_post_meta( $post_id, '_booking_min', true );
+                    $parent_booking_max = get_post_meta( $post_id, '_booking_max', true );
+                    $parent_first_available_date = get_post_meta( $post_id, '_first_available_date', true );
+
+                }
 
                 $variation_ids = $product->get_children();
 
@@ -53,21 +63,38 @@ class WCEB_Assets {
 
                     $variation = wc_get_product( $variation_id );
                     $price[$variation_id] = $tax_display_mode === 'incl' ? $variation->get_price_including_tax() : $variation->get_price_excluding_tax(); // Product price (Regular or sale)
-                    $booking_min[$variation_id] = get_post_meta($variation_id, '_booking_min', true) ? get_post_meta($variation_id, '_booking_min', true) : 0;
-                    $booking_max[$variation_id] = get_post_meta($variation_id, '_booking_max', true) ? get_post_meta($variation_id, '_booking_max', true) : 0;
-                    $first_available_date[$variation_id] = get_post_meta($variation_id, '_first_available_date', true) ? get_post_meta($variation_id, '_first_available_date', true) : 0;
+
+                    $data = array( 'booking_min', 'booking_max', 'first_available_date' );
+
+                    foreach ( $data as $attr ) {
+                        $parent_attr = 'parent_'.$attr;
+
+                        $variation_attr_data = get_post_meta( $variation_id, '_'.$attr, true );
+
+                        if ( empty( $variation_attr_data ) && $variation_attr_data != '0' ) {
+                            ${$attr}[$variation_id] = ! empty( ${$parent_attr} ) ? ${$parent_attr} : '0';
+                        } else {
+                            ${$attr}[$variation_id] = $variation_attr_data;
+                        }
+                    }
 
                 }
 
             }
 
-            $this->easy_booking_load_scripts( $product_type, $price, $booking_min, $booking_max, $first_available_date );
+            $booking_settings = array(
+                'booking_min' => $booking_min,
+                'booking_max' => $booking_max,
+                'first_available_date' => $first_available_date
+            );
+
+            $this->easy_booking_load_scripts( $product_type, $price, $booking_settings );
 
         }
         
     }
 
-    public function easy_booking_load_scripts( $product_type, $price, $booking_min, $booking_max, $first_available_date ) {
+    public function easy_booking_load_scripts( $product_type, $price, $booking_settings ) {
 
         // Get page language in order to load Pickadate translation
         $site_language = get_bloginfo( 'language' );
@@ -78,6 +105,10 @@ class WCEB_Assets {
         $start_date_text = $this->options['easy_booking_start_date_text'];
         $end_date_text = $this->options['easy_booking_end_date_text'];
 
+        $booking_min = $booking_settings['booking_min'];
+        $booking_max = $booking_settings['booking_max'];
+        $first_available_date = $booking_settings['first_available_date'];
+
         // Calendar theme
         $theme = $this->options['easy_booking_calendar_theme'];
 
@@ -87,14 +118,16 @@ class WCEB_Assets {
         // wp_enqueue_script( 'picker.date', plugins_url( 'assets/js/dev/picker.date.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate'), '1.0', true);
         // wp_enqueue_script( 'legacy', plugins_url( 'assets/js/dev/legacy.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate', 'picker.date'), '1.0', true);
 
-        wp_enqueue_script( 'pickadate-custom', plugins_url( 'assets/js/pickadate-custom.min.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate'), '1.0', true);
-        // wp_enqueue_script( 'pickadate-custom', plugins_url( 'assets/js/dev/pickadate-custom.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate'), '1.0', true);
+        do_action( 'easy_booking_enqueue_additional_scripts' );
+
+        wp_enqueue_script( 'pickadate-custom', plugins_url( 'assets/js/pickadate-custom.min.js', WCEB_PLUGIN_FILE ), apply_filters( 'easy_booking_pickadate_dependecies', array( 'jquery', 'pickadate' ) ), '1.0', true);
+        // wp_enqueue_script( 'pickadate-custom', plugins_url( 'assets/js/dev/pickadate-custom.js', WCEB_PLUGIN_FILE ), apply_filters( 'easy_booking_pickadate_dependecies', array( 'jquery', 'pickadate' ) ), '1.0', true);
 
         if ( function_exists( 'is_multisite' ) && is_multisite() ) {
             $blog_id = get_current_blog_id();
-            wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.' . $blog_id . '.min.css.php', WCEB_PLUGIN_FILE), true);
+            wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.' . $blog_id . '.min.css', WCEB_PLUGIN_FILE), true);
         } else {
-            wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.min.css.php', WCEB_PLUGIN_FILE), true);
+            wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.min.css', WCEB_PLUGIN_FILE), true);
         }
         
         wp_enqueue_style( 'picker' );

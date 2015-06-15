@@ -36,16 +36,16 @@ class WCEB_Product_View {
     public function easy_booking_before_add_to_cart_button() {
         global $post, $product;
 
-        $product = get_product( $product->id );
+        $product = wc_get_product( $product->id );
 
         // Is product bookable ?
-        $is_bookable = WCEB()->easy_booking_is_bookable( $product->id );
+        $is_bookable = get_post_meta( $product->id, '_booking_option', true );
         
         $info_text = $this->options['easy_booking_info_text'];
         $start_date_text = $this->options['easy_booking_start_date_text'];
         $end_date_text = $this->options['easy_booking_end_date_text'];
         $product_price = $product->get_price();
-
+        
         $args = apply_filters( 'easy_booking_new_price_args', array() );
 
         // Product is bookable
@@ -93,9 +93,8 @@ class WCEB_Product_View {
         
         $product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : $post->ID; // Product ID
         
-        $is_bookable = WCEB()->easy_booking_is_bookable( $product_id ); // Is it bookable ?
-        $wceb_settings = get_option('easy_booking_settings');
-        $calc_mode = $wceb_settings['easy_booking_calc_mode'];
+        $is_bookable = get_post_meta( $product_id, '_booking_option', true ); // Is it bookable ?
+        $calc_mode = $this->options['easy_booking_calc_mode'];
 
         // If bookable, return a price / day. If not, return normal price
         if ( isset( $is_bookable ) && $is_bookable === 'yes' ) {

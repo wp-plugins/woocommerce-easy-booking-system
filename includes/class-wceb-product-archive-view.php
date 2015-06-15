@@ -28,7 +28,7 @@ class WCEB_Product_Archive_View {
             return;
 
         // Is product bookable ?
-        $is_bookable = WCEB()->easy_booking_is_bookable( $product->id );
+        $is_bookable = get_post_meta( $product->id, '_booking_option', true );
 
         // If product is bookable
         if ( isset( $is_bookable ) && $is_bookable === 'yes' ) {

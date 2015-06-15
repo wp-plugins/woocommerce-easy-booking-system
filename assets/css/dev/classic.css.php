@@ -48,6 +48,12 @@ function classicAdjustBrightness($hex, $steps) {
   position: relative;
 }
 
+.wceb_picker_wrap:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
 input[readonly] {
     cursor: pointer !important;
 }
@@ -57,8 +63,6 @@ input[readonly] {
   text-align: left;
   line-height: 1.2;
   color: <?php echo $text_color; ?>;
-  position: absolute;
-  z-index: 10000;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -114,6 +118,7 @@ input[readonly] {
   min-width: 176px;
   max-width: 466px;
   max-height: 0;
+  z-index: 10000;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: alpha(opacity=0);
   -moz-opacity: 0;
@@ -298,6 +303,10 @@ input[readonly] {
   margin: 0;
   padding: 0;
 }
+.picker_table th, .picker__table tr, .picker__table td {
+  background: none;
+  border: none;
+}
 /**
  * The weekday labels
  */
@@ -341,7 +350,7 @@ input[readonly] {
   border-top-color: <?php echo adjustBrightness($background_color, -75); ?>;
 }
 .picker__day--outfocus {
-  color: #dddddd;
+  color: <?php echo adjustBrightness($background_color, -25); ?>;
 }
 .picker__day--infocus:hover,
 .picker__day--outfocus:hover {
@@ -369,7 +378,7 @@ input[readonly] {
 .picker--focused .picker__day--disabled {
   background: <?php echo adjustBrightness($background_color, -10); ?>;
   border-color: <?php echo adjustBrightness($background_color, -10); ?>;
-  color: #dddddd;
+  color: <?php echo adjustBrightness($background_color, -25); ?>;
   cursor: default;
 }
 .picker__day--highlighted.picker__day--disabled,
@@ -387,6 +396,7 @@ input[readonly] {
 .picker__button--close {
   border: 1px solid <?php echo $background_color; ?>;
   background: <?php echo $background_color; ?>;
+  color: <?php echo $text_color; ?>;
   font-size: .8em;
   padding: .66em 0;
   font-weight: bold;
@@ -444,7 +454,7 @@ input[readonly] {
 .picker__button--today[disabled]:hover {
   background: <?php echo adjustBrightness($background_color, -10); ?>;
   border-color: <?php echo adjustBrightness($background_color, -10); ?>;
-  color: #dddddd;
+  color: <?php echo adjustBrightness($background_color, -25); ?>;
   cursor: default;
 }
 .picker__button--today[disabled]:before {

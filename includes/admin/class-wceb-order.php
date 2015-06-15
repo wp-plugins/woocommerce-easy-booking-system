@@ -9,6 +9,9 @@ if ( ! class_exists( 'WCEB_Order' ) ) :
 class WCEB_Order {
 
     public function __construct() {
+
+        $this->options = get_option( 'easy_booking_settings' );
+
         add_action('woocommerce_before_order_itemmeta', array($this, 'easy_booking_order_display_product_dates'), 10, 3);
         add_action('wp_ajax_ebs_sku_order_update_product_dates', array( $this, 'easy_booking_order_update_product_dates'));
         add_action('woocommerce_saved_order_items', array($this, 'easy_booking_update_order_product'), 10, 2);
@@ -31,13 +34,12 @@ class WCEB_Order {
 
         // Is product bookable ?
         $is_bookable = get_post_meta( $id, '_booking_option', true );
-        $settings = get_option( 'easy_booking_settings' );
 
         $start_date_set = wc_get_order_item_meta( $item_id, '_ebs_start_format' );
         $end_date_set = wc_get_order_item_meta( $item_id, '_ebs_end_format' );
 
-        $start_date_text = $settings['easy_booking_start_date_text'];
-        $end_date_text = $settings['easy_booking_end_date_text'];
+        $start_date_text = $this->options['easy_booking_start_date_text'];
+        $end_date_text = $this->options['easy_booking_end_date_text'];
 
         if ( ! empty( $start_date_set ) && ! empty( $end_date_set ) ) {
 
@@ -119,7 +121,6 @@ class WCEB_Order {
         if ( ! $product )
             return false;
 
-        $this->options = get_option( 'easy_booking_settings' );
         $calc_mode = $this->options['easy_booking_calc_mode']; // Calculation mode (Days or Nights)
 
         // Get booking duration

@@ -54,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php _e('Learn more', 'easy_booking'); ?>
 							</a>
 							<?php } else { ?>
-							<a href="#" target="_blank" class="button easy-booking-button easy-booking-button--installed">
+							<a href="#" class="button easy-booking-button easy-booking-button--installed">
 								<?php _e('Installed', 'easy_booking'); ?>
 							</a>
 							<a href="http://herownsweetway.com/product/<?php echo $addon['name']; ?>/#faq" target="_blank" class="button easy-booking-button">

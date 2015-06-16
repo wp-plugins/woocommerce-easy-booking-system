@@ -3,7 +3,7 @@
 Plugin Name: Woocommerce Easy Booking
 Plugin URI: http://herownsweetway.com/product/woocommerce-easy-booking/
 Description: Allows users to rent or book products
-Version: 1.6
+Version: 1.6.1
 Author: @_Ashanna
 Author URI: http://ashanna.com
 Licence : GPLv2 or later

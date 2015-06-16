@@ -96,23 +96,15 @@ class WCEB_Settings {
         	'classic' => realpath( $plugin_dir . 'assets/css/dev/classic.css.php' )
         );
 
-        if ( function_exists( 'is_multisite' ) && is_multisite() ) {
-			$blog_id = get_current_blog_id();
+        $blog_id = '';
 
-			$default = str_replace('/', '\\', $plugin_dir . 'assets/css/default.' . $blog_id . '.min.css' ); // Replace backslashes with forwardslashes
-			$classic = str_replace('/', '\\', $plugin_dir . 'assets/css/classic.' . $blog_id . '.min.css' ); // Replace backslashes with forwardslashes
+        if ( function_exists( 'is_multisite' ) && is_multisite() )
+			$blog_id = '.' . get_current_blog_id();
 
-			$css_files = array(
-	        	'default' => $default,
-	        	'classic' => $classic
-	        );
-
-		} else {
-			$css_files = array(
-	        	'default' => str_replace('/', '\\', $plugin_dir . 'assets/css/default.min.css' ),
-	        	'classic' => str_replace('/', '\\', $plugin_dir . 'assets/css/classic.min.css' )
-	        );
-		}
+		$css_files = array(
+        	'default' => realpath( $plugin_dir . 'assets/css/default' . $blog_id . '.min.css' ),
+        	'classic' => realpath( $plugin_dir . 'assets/css/classic' . $blog_id . '.min.css' )
+        );
 
         if ( $php_files ) foreach ( $php_files as $theme => $php_file ) {
         	ob_start(); // Capture all output (output buffering)
@@ -123,19 +115,13 @@ class WCEB_Settings {
 	        $minified_css = WCEB()->easy_booking_minify_css( $css ); // Minify CSS
 
 	        if ( file_exists( $css_files[$theme] ) ) {
-
 	        	if ( is_writable( $css_files[$theme] ) )
 	        		file_put_contents( $css_files[$theme], $minified_css ); // Save it
 
 	        } else {
-
-		        $created_file = fopen( $css_files[$theme], 'w+' );
-
-		        if ( is_writable( $css_files[$theme] ) ) {
-		        	fwrite( $created_file, $minified_css );
-		        	fclose( $created_file );
-		        }
-
+	        	$file = fopen( $plugin_dir . 'assets/css/' . $theme . $blog_id . '.min.css', 'a+' );
+		        fwrite( $file, $minified_css );
+		        fclose( $file );
 	        }
 
         }

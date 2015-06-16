@@ -368,6 +368,10 @@ input[readonly] {
   margin: 0;
   padding: 0;
 }
+.picker_table th, .picker__table tr, .picker__table td {
+  background: none;
+  border: none;
+}
 /**
  * The weekday labels
  */
@@ -413,7 +417,7 @@ input[readonly] {
   border-top-color: <?php echo adjustBrightness($background_color, -75); ?>;
 }
 .picker__day--outfocus {
-  color: <?php echo adjustBrightness($background_color, -50); ?>;
+  color: <?php echo adjustBrightness($background_color, -25); ?>;
 }
 .picker__day--infocus:hover,
 .picker__day--outfocus:hover {
@@ -441,7 +445,7 @@ input[readonly] {
 .picker--focused .picker__day--disabled {
   background: <?php echo adjustBrightness($background_color, -10); ?>;
   border-color: <?php echo adjustBrightness($background_color, -10); ?>;
-  color: <?php echo adjustBrightness($background_color, -50); ?>;
+  color: <?php echo adjustBrightness($background_color, -25); ?>;
   cursor: default;
 }
 .picker__day--highlighted.picker__day--disabled,
@@ -459,6 +463,7 @@ input[readonly] {
 .picker__button--close {
   border: 1px solid <?php echo $background_color; ?>;
   background: <?php echo $background_color; ?>;
+  color: <?php echo $text_color; ?>;
   font-size: .8em;
   padding: .66em 0;
   font-weight: bold;
@@ -510,17 +515,17 @@ input[readonly] {
   vertical-align: top;
   font-size: 1.1em;
   margin-right: .35em;
-  color: #777777;
+  color: <?php echo adjustBrightness($background_color, -150); ?>;
 }
 .picker__button--today[disabled],
 .picker__button--today[disabled]:hover {
-  background: #f5f5f5;
-  border-color: #f5f5f5;
-  color: #dddddd;
+  background: <?php echo adjustBrightness($background_color, -10); ?>;
+  border-color: <?php echo adjustBrightness($background_color, -10); ?>;
+  color: <?php echo adjustBrightness($background_color, -25); ?>;
   cursor: default;
 }
 .picker__button--today[disabled]:before {
-  border-top-color: #aaaaaa;
+  border-top-color: <?php echo adjustBrightness($background_color, -75); ?>;
 }
 
 /* ==========================================================================

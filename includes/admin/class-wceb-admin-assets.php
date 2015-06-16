@@ -24,6 +24,22 @@ class WCEB_Admin_Assets {
 
         $admin_picker_script = '';
 
+        // Concatenated and minified script including picker.js, picker.date.js and legacy.js
+        wp_register_script( 'pickadate', plugins_url( 'assets/js/pickadate.min.js', WCEB_PLUGIN_FILE ), array('jquery'), '1.0', true );
+        // wp_register_script( 'picker', plugins_url( 'assets/js/dev/picker.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true );
+        // wp_register_script( 'picker.date', plugins_url( 'assets/js/dev/picker.date.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true );
+        // wp_register_script( 'legacy', plugins_url( 'assets/js/dev/legacy.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true );
+
+        // Calendar theme
+        $theme = $this->options['easy_booking_calendar_theme'];
+
+        if ( function_exists( 'is_multisite' ) && is_multisite() ) {
+            $blog_id = get_current_blog_id();
+            wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.' . $blog_id . '.min.css', WCEB_PLUGIN_FILE), true);
+        } else {
+            wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.min.css', WCEB_PLUGIN_FILE), true);
+        }
+
         if ( in_array( $screen->id, array( 'product' ) ) ) {
 
             $product = wc_get_product( $post->ID );
@@ -44,18 +60,8 @@ class WCEB_Admin_Assets {
             // Calculation mode (Days or Nights)
             $calc_mode = $this->options['easy_booking_calc_mode'];
 
-            // Calendar theme
-            $theme = $this->options['easy_booking_calendar_theme'];
-
             wp_enqueue_script( 'pickadate-custom-admin', plugins_url( 'assets/js/admin/pickadate-custom-admin.min.js', WCEB_PLUGIN_FILE ), array('jquery', 'pickadate'), '1.0', true);
             // wp_enqueue_script( 'pickadate-custom-admin', plugins_url('assets/js/admin/dev/pickadate-custom-admin.js', WCEB_PLUGIN_FILE), array('jquery', 'pickadate'), '1.0', true );
-
-            if ( function_exists( 'is_multisite' ) && is_multisite() ) {
-                $blog_id = get_current_blog_id();
-                wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.' . $blog_id . '.min.css.php', WCEB_PLUGIN_FILE), true);
-            } else {
-                wp_register_style( 'picker', plugins_url('assets/css/' . $theme . '.min.css.php', WCEB_PLUGIN_FILE), true);
-            }
             
             wp_enqueue_style( 'picker' );
 
@@ -73,11 +79,7 @@ class WCEB_Admin_Assets {
 
         if ( in_array( $screen->id, array( 'product' ) ) || in_array( $screen->id, array( 'shop_order' ) ) ) {
 
-            // Concatenated and minified script including picker.js, picker.date.js and legacy.js
-            wp_enqueue_script( 'pickadate', plugins_url( 'assets/js/pickadate.min.js', WCEB_PLUGIN_FILE ), array('jquery'), '1.0', true);
-            // wp_enqueue_script( 'picker', plugins_url( 'assets/js/dev/picker.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true);
-            // wp_enqueue_script( 'picker.date', plugins_url( 'assets/js/dev/picker.date.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true);
-            // wp_enqueue_script( 'legacy', plugins_url( 'assets/js/dev/legacy.js', WCEB_PLUGIN_FILE  ), array('jquery'), '1.0', true);
+            wp_enqueue_script( 'pickadate' );
 
             if ( is_rtl() ) {
                 // Load Right to left CSS file

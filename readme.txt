@@ -14,12 +14,12 @@ This plugins allows you to add an option to your product in order to book or ren
 
 It uses Pickadate.js (http://amsul.ca/pickadate.js/) to display the calendars and set the dates.
 
-See the plugin demo here : http://herownsweetway.com/product/woocommerce-easy-booking/
+See the plugin demo here : http://herownsweetcode.com/product/woocommerce-easy-booking/
 
 For more features, check these add-ons :
 
-* Easy Booking : Availability Check : http://herownsweetway.com/product/easy-booking-availability-check/
-* Easy Booking : Duration Discounts : http://herownsweetway.com/product/easy-booking-duration-discounts/
+* Easy Booking : Availability Check : http://herownsweetcode.com/product/easy-booking-availability-check/
+* Easy Booking : Duration Discounts : http://herownsweetcode.com/product/easy-booking-duration-discounts/
 
 == Installation ==
 
@@ -73,13 +73,13 @@ First, you need to install WooCommerce.
 * Add - Reports page on the admin.
 * Add - "/ night" price when in "nights" mode.
 * Add - Remove "/ day" or "/ night" text when variation is not bookable.
-* Add - "WooCommerce Product Add-ons" compatibility. Please, refer to the documentation for more information about this : http://herownsweetway.com/product/woocommerce-easy-booking/#documentation.
+* Add - "WooCommerce Product Add-ons" compatibility. Please, refer to the documentation for more information about this : http://herownsweetcode.com/product/woocommerce-easy-booking/#documentation.
 * Add - Automatically open second date picker after selecting first date.
 * Add - Calendar titles.
 * Add - Minifying CSS on-the-fly after saving plugin settings.
 * Add - Close button on the calendar.
 * Update - Pickadate.js version 3.5.6.
-* Remove - WooCommerce Currency Switcher compatibility. Please, refer to the documentation to makes these plugins compatible : http://herownsweetway.com/product/woocommerce-easy-booking/#documentation.
+* Remove - WooCommerce Currency Switcher compatibility. Please, refer to the documentation to makes these plugins compatible : http://herownsweetcode.com/product/woocommerce-easy-booking/#documentation.
 
 = 1.5 =
 
@@ -106,7 +106,7 @@ This update contains major changes for variable products. Backwards compatibilit
 = 1.4.3 =
 
 Easy Booking : Availability Check, the add-on to manage stocks and availabilities for WooCommerce Easy Booking is available !
-Get it now on http://herownsweetway.com/product/easy-booking-availability-check/ !
+Get it now on http://herownsweetcode.com/product/easy-booking-availability-check/ !
 
 * Add - Admin notices styles.
 * Fix - Removed WooCommerce loading gif (which was not loaded, causing Javascript errors).

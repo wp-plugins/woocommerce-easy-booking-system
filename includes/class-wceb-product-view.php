@@ -14,7 +14,7 @@ class WCEB_Product_View {
         
         add_filter( 'woocommerce_available_variation', array( $this, 'easy_booking_add_variation_bookable_attribute' ), 10, 3);
 		add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'easy_booking_before_add_to_cart_button' ), 20);
-        add_filter( 'woocommerce_get_price_html', array( $this, 'easy_booking_add_price_html' ), 10, 2 );
+        add_filter( 'woocommerce_get_price_html', array( $this, 'easy_booking_add_price_html' ), 10, 1 );
 	}
 
     public function easy_booking_add_variation_bookable_attribute( $available_variations, $product, $variation ) {

@@ -50,17 +50,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php echo $addon['desc']; ?>
 						<p>
 							<?php if ( ! ( array_key_exists( $addon['name'] .'/' . $addon['name'] . '.php', $active_plugins ) || in_array( $addon['name'] .'/' . $addon['name'] . '.php', $active_plugins ) ) ) { ?>
-							<a href="http://herownsweetway.com/product/<?php echo $addon['name']; ?>" target="_blank" class="button easy-booking-button">
+							<a href="http://herownsweetcode.com/product/<?php echo $addon['name']; ?>" target="_blank" class="button easy-booking-button">
 								<?php _e('Learn more', 'easy_booking'); ?>
 							</a>
 							<?php } else { ?>
 							<a href="#" class="button easy-booking-button easy-booking-button--installed">
 								<?php _e('Installed', 'easy_booking'); ?>
 							</a>
-							<a href="http://herownsweetway.com/product/<?php echo $addon['name']; ?>/#faq" target="_blank" class="button easy-booking-button">
+							<a href="http://herownsweetcode.com/product/<?php echo $addon['name']; ?>/#faq" target="_blank" class="button easy-booking-button">
 								<?php _e('Documentation', 'easy_booking'); ?>
 							</a>
-							<a href="http://herownsweetway.com/support/<?php echo $addon['name']; ?>" target="_blank" class="button easy-booking-button">
+							<a href="http://herownsweetcode.com/support/<?php echo $addon['name']; ?>" target="_blank" class="button easy-booking-button">
 								<?php _e('Support', 'easy_booking'); ?>
 							</a>
 							<?php } ?>
